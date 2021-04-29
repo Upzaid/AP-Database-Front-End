@@ -1,3 +1,5 @@
+$accent-color: #f5b420;
+$background-color: #fcfbee;
 * {
   padding: 0;
   margin: 0;
@@ -14,13 +16,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-.button span {
-  padding-right: 5%;
-}
-.button img {
-  max-height: 100%;
-  padding: 5%;
+  span {
+    padding-right: 5%;
+  }
+  img {
+    max-height: 100%;
+    padding: 5%;
+  }
 }
 
 .main-window {
@@ -28,27 +30,29 @@
   grid-template-columns: 220px 1fr;
 }
 
-.side-menu .button {
-  height: 9.09vh;
-  min-width: 220px;
-  font-weight: 600;
-  color: #f5b420;
-}
-.side-menu .button:hover,
-.side-menu .active {
-  border: none;
-  border-left: 0.75vh solid #f5b420;
-  background-color: #fcfbee;
+.side-menu {
+  .button {
+    height: 9.09vh;
+    min-width: 220px;
+    font-weight: 600;
+    color: $accent-color;
+  }
+  .button:hover,
+  .active {
+    border: none;
+    border-left: 0.75vh solid $accent-color;
+    background-color: $background-color;
+  }
 }
 
 .content-container {
-  background-color: #fcfbee;
+  background-color: $background-color;
   padding: 3%;
   display: grid;
 }
 
 .title {
-  color: #f5b420;
+  color: $accent-color;
   text-align: center;
   margin-bottom: 1%;
 }
@@ -66,16 +70,17 @@
 ul {
   display: flex;
   justify-self: center;
-}
-ul li {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  list-style: none;
-  padding: 10px;
-  height: 40px;
-  min-width: 150px;
-  border: 1px solid #ddd;
+
+  li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    padding: 10px;
+    height: 40px;
+    min-width: 150px;
+    border: 1px solid #ddd;
+  }
 }
 
 .table-header {
@@ -86,6 +91,7 @@ ul li {
   height: 40px;
   background-color: white;
   justify-self: flex-end;
+
   font-size: 0.8em;
   font-weight: 700;
 }
@@ -93,5 +99,3 @@ ul li {
 .new:hover {
   background-color: #b5ff98;
 }
-
-/*# sourceMappingURL=App.css.map */
