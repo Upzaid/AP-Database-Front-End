@@ -1,45 +1,79 @@
 import React, {useState, useEffect} from 'react'
 import Nuevo from '../../Assets/Nuevo.svg'
+import SearchBar from '../SearchBar'
 
-function PersonalFrame (props){
+const { ipcRenderer } = window.require("electron");
+
+function PersonalFrame (){
     useEffect(()=>{
-        // API CALL FOR ANTICIPOS LIST
+        getPersonal()
     },[])
 
-    const[rows, setRows] =useState([[1,2,3]])
+    const [personal, setPersonal] = useState([])
+    const headings =["Clave", "Nombre", "R.F.C.","Telefono"]
+
+    async function getPersonal(){
+        const response = await fetch(`${localStorage.getItem('server-url')}/personal/list`, {
+            headers : {
+                    'auth-token': localStorage.getItem('auth-token'),
+                } 
+            })
+        setPersonal(await response.json());
+    }
+
+    function openPersonal(clave){
+        ipcRenderer.sendSync('create-window',
+            ({
+                width:400, 
+                height:800, 
+                url: `${process.env.REACT_APP_URL}/personal?clave=${clave}&mode=edit`
+            })
+        )
+    }
     
-    const headings =["Clave", "Nombre", "R.F.C.", "Direccion", "Telefono"]
-    
+    function newPersonal(){
+        ipcRenderer.sendSync('create-window',
+            ({
+                width:400, 
+                height:800, 
+                url: `${process.env.REACT_APP_URL}/personal?mode=new`
+            })
+        ) 
+    }
+
     return(
         <>
             <h1 className="title">Personal</h1>
+            <SearchBar filters={headings} function={null}/>
             <div className="frame">
-                <ul className="table-header">
-                    <li></li>
-                    {headings.map(heading=>{
+                <table>
+                    <tr>
+                        <th></th>
+                        {headings.map(heading=>{
+                            return(
+                                <th>{heading}</th>
+                            )
+                        })}
+                        <th></th>
+                    </tr>
+                    {personal.map(personal=>{
                         return(
-                            <li>{heading}</li>
+                            <tr key={personal.clave} className="row">
+                                <td onClick={()=>openPersonal(personal.clave)} className="pointer">Abrir</td>
+                                <td>{personal.clave}</td>
+                                <td>{personal.nombres} {personal.primer_apellido} {personal.segundo_apellido}</td>
+                                <td>{personal.rfc}</td>
+                                <td>{personal.telefono}</td>
+                                <td className="delete pointer">Borrar</td>
+                            </tr>
                         )
                     })}
-                </ul>
-                {rows.map(row=>{
-                    return(
-                        <ul>
-                            <li className="pointer">Ver / Editar</li>
-                            {row.map(column=>{
-                                return(
-                                    <li>{column}</li>
-                                )
-                            })}
-                        </ul>
-                    )
-                })}
+                </table>
             </div>
-            <br/>
-           <div className="button new ">
+            <div onClick={()=> newPersonal()} className="button new ">
                 <img src={Nuevo} alt=""/>
                 <span>Nuevo Personal</span>
-           </div>
+            </div>
         </>
     )
 }
