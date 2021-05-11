@@ -1,3 +1,4 @@
+const env = require('dotenv').config()
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = require('electron')
 const path = require('path')
@@ -19,8 +20,8 @@ function createWindow () {
     icon: './src/Assets/Logo.png'
   })
   
-  // and load the index.html of the app.
-  mainWindow.loadURL('http://localhost:3000/login')
+  // and load the url of the app.
+  mainWindow.loadURL(`${process.env.REACT_APP_URL}/login`) // URL Accesspoint to the React App
   mainWindow.setMenu(null)
   
   // Open the DevTools.
@@ -47,11 +48,9 @@ app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit()
 })
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
-
+// Listen for create-window event
 ipcMain.on('create-window', (event, arg) =>{
-  const configWindow = new BrowserWindow({
+  const window = new BrowserWindow({
     width: arg.width,
     height: arg.height,
     webPreferences: {
@@ -60,8 +59,40 @@ ipcMain.on('create-window', (event, arg) =>{
     },
     icon: './src/Assets/Logo.png',
   })
-  configWindow.loadURL(arg.url)
-  console.log(__dirname);
+  window.setMenu(null)
+  // OPEN DEV TOOLS REMOVE FOR PRODUCTION
+  window.openDevTools()
+  window.loadURL(arg.url)
 
+  event.returnValue = null
+})
+
+// Listen for confirm
+
+ipcMain.on('confirm', (event, message)=>{
+  const options ={
+    type: 'none',
+    buttons: ['Cancelar', 'Aceptar'],
+    message,
+    icon : './src/Assets/Logo.png',
+
+  }
+  const result = electron.dialog.showMessageBoxSync(options)
+
+  if (result === 0) return event.returnValue = false
+  return event.returnValue = true
+
+} )
+
+ipcMain.on('alert', (event, message) =>{
+
+  const options ={
+    type: "none",
+    message,
+    icon : './src/Assets/Logo.png',
+  }
+
+  electron.dialog.showMessageBoxSync(options)
+  
   event.returnValue = null
 })
