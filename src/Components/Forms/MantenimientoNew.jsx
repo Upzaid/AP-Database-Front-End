@@ -44,7 +44,8 @@ export default function MantenimientoNew(){
         })
 
         if (response.status === 200){
-            return ipcRenderer.sendSync('alert', await response.json())
+            ipcRenderer.sendSync('alert', await response.json())
+            return window.location.replace('/mantenimiento')
         }else if (response.status === 202){
             return ipcRenderer.sendSync('alert',(await response.json()).join('\n'))
         }
@@ -65,7 +66,7 @@ export default function MantenimientoNew(){
                 <input type="date" id="fecha_cierre" />
                 <br />
                 <label >Unidad:</label>
-                <input type="number" id="unidad" />
+                <input type="number" id="unidad" required/>
                 <br />
                 <label >Ubicacion:</label>
                 <input type="text" id="ubicacion" />
@@ -78,7 +79,6 @@ export default function MantenimientoNew(){
                 <br />
                 <button type="submit" className="btn">Guardar</button>
             </form>
-
         </div>
     )
 }
