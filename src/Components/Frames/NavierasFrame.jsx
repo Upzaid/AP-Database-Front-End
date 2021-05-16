@@ -1,45 +1,80 @@
 import React, {useState, useEffect} from 'react'
 import Nuevo from '../../Assets/Nuevo.svg'
+import SearchBar from '../SearchBar'
+
+const { ipcRenderer } = window.require("electron");
 
 function NavierasFrame (props){
     useEffect(()=>{
-        // API CALL FOR ANTICIPOS LIST
+        getNavieras()
     },[])
 
-    const[rows, setRows] =useState([[1,2,3]])
+    const[navieras, setNavieras] =useState([])
     
     const headings =["Clave", "Razon Social", "R.F.C.", "Direccion"]
+
+    async function getNavieras(){
+        const response = await fetch(`${localStorage.getItem('server-url')}/naviera/list`, {
+            headers : {
+                    'auth-token': localStorage.getItem('auth-token'),
+                } 
+            })
+        setNavieras(await response.json());
+    }
     
+    function openNaviera(clave){
+        ipcRenderer.sendSync('create-window',
+            ({
+                width:400, 
+                height:700, 
+                url: `${process.env.REACT_APP_URL}/naviera?clave=${clave}&mode=edit`
+            })
+        )
+    }
+    
+    function newNaviera(){
+        ipcRenderer.sendSync('create-window',
+            ({
+                width:400, 
+                height:700, 
+                url: `${process.env.REACT_APP_URL}/naviera`
+            })
+        )
+    }
+
     return(
         <>
             <h1 className="title">Navieras</h1>
+            <SearchBar filters={headings} function={null}/>
             <div className="frame">
-                <ul className="table-header">
-                    <li></li>
-                    {headings.map(heading=>{
+                <table>
+                    <tr>
+                        <th></th>
+                        {headings.map(heading=>{
+                            return(
+                                <th>{heading}</th>
+                            )
+                        })}
+                        <th></th>
+                    </tr>
+                    {navieras.map(naviera=>{
                         return(
-                            <li>{heading}</li>
+                            <tr key={naviera.clave} className="row">
+                                <td onClick={()=>{openNaviera(naviera.clave)}} className="pointer">Abrir</td>
+                                <td >{naviera.clave}</td>
+                                <td >{naviera.razon_social}</td>
+                                <td >{naviera.rfc}</td>
+                                <td >{naviera.domicilio}</td>
+                                <td className="delete pointer">Borrar</td>
+                            </tr>
                         )
                     })}
-                </ul>
-                {rows.map(row=>{
-                    return(
-                        <ul>
-                            <li className="pointer">Ver / Editar</li>
-                            {row.map(column=>{
-                                return(
-                                    <li>{column}</li>
-                                )
-                            })}
-                        </ul>
-                    )
-                })}
+                </table>
             </div>
-            <br/>
-           <div className="button new ">
+            <div onClick={()=>newNaviera()} className="button new ">
                 <img src={Nuevo} alt=""/>
                 <span>Nueva Naviera</span>
-           </div>
+            </div>
         </>
     )
 }
