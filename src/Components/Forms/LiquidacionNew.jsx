@@ -9,11 +9,16 @@ export default function LiquidacionNew(){
     const [comprobacion, setComporbacion] = useState([])
     const [personal, setPersonal] = useState([])
     const [latest, setLatest] = useState()
+    const [total, setTotal] = useState()
 
     useEffect(()=>{
         getPersonal()
         getLatest()
     },[])
+
+    useEffect(()=>{
+        calculateTotal()
+    },[ordenes, anticipos, comprobacion])
 
     async function getLatest(){
         const response = await fetch(`${localStorage.getItem('server-url')}/liquidacion/latest`, {
@@ -169,7 +174,7 @@ export default function LiquidacionNew(){
     function addComprobacion(){
         const concepto = document.getElementById('comp-concepto').value
         const importe = document.getElementById('comp-importe').value
-
+    
         const comprobacionArray = [...comprobacion]
 
         comprobacionArray.push({concepto, importe})
@@ -225,6 +230,13 @@ export default function LiquidacionNew(){
         }
         return ipcRenderer.sendSync('alert', 'Error!')
 
+    }
+
+    function calculateTotal(){
+        const totalOrdenes = ordenes.reduce((acc, curr)=> acc + curr.comision, 0)
+        const totalAntcicpos = anticipos.reduce((acc, curr)=> acc + curr.importe, 0)
+        const totalComprobacion = comprobacion.reduce((acc, curr)=> acc + Number(curr.importe), 0)
+        setTotal(totalOrdenes - totalAntcicpos + totalComprobacion)
     }
 
     return(
@@ -319,7 +331,7 @@ export default function LiquidacionNew(){
                     <label >Concepto:</label>
                     <input type="text" name="" id="comp-concepto" />
                     <label >Importe:</label>
-                    <input type="number" name="" id="comp-importe" />
+                    <input type="number" name="" id="comp-importe" step="0.01"/>
                     <button onClick={()=> addComprobacion()} type="button" className="btn">+</button>
                 </div>
                 <table>
@@ -346,8 +358,8 @@ export default function LiquidacionNew(){
              
                 <br />
                 <div>
-                    <button type="button" className="btn">Calcular Total</button>
-                    <input type="number" id="total"/>
+                    <label >Total:</label>
+                    <span id="total"> ${total}</span>
                 </div>
                 <br />
                 <div className="c2">
