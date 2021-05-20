@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import {useLocation} from 'react-router-dom'
+import {updateNaviera, getSingleNaviera} from '../../Useful Functions/Naviera'
 
 export default function NavieraEdit(){
 
@@ -10,23 +11,15 @@ export default function NavieraEdit(){
     const [naviera, setNaviera] = useState([])
     
     useEffect(()=>{
-        getNaviera()
+        findNaviera()
     },[])
 
-    async function getNaviera(){
-        const response = await fetch(`${localStorage.getItem('server-url')}/naviera/find/${clave}`,{
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                } 
-            })
-        setNaviera([await response.json()])
+    async function findNaviera(){
+        setNaviera([await getSingleNaviera(clave)])
     }
 
-    async function submit(e){
+    function submit(e){
         e.preventDefault()
-        const result = window.confirm('¿Desea guardar los cambios?')
-        if(!result) return 
-
         const newNaviera = {
             clave: naviera[0].clave,
             razon_social: document.getElementById('razon_social').value,
@@ -34,18 +27,7 @@ export default function NavieraEdit(){
             telefono: document.getElementById('telefono').value,
             domicilio: document.getElementById('domicilio').value,
         }
-
-        const response = await fetch(`${localStorage.getItem('server-url')}/naviera/edit`,{
-            method: 'PUT',
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                    'Content-Type': 'application/json',
-                },
-            body: JSON.stringify(newNaviera)
-            })
-        if (response.status < 300) {
-            return alert(await response.json())
-        }else return alert('Error!')
+        updateNaviera(newNaviera)
     }
 
     return(

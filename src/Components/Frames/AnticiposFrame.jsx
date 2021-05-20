@@ -1,45 +1,59 @@
 import React, {useState, useEffect} from 'react'
 import Nuevo from '../../Assets/Nuevo.svg'
+import SearchBar from '../SearchBar'
+import {newAnticipo, openAnticipo, deleteAnticipo, getAnticipos} from '../../Useful Functions/Anticipo'
 
-function AnticiposFrame (props){
+function AnticiposFrame (){
     useEffect(()=>{
-        // API CALL FOR ANTICIPOS LIST
+       findAnticipos()
     },[])
 
-    const[rows, setRows] =useState([])
-    
-    const headings =["Serie", "Folio", "Fecha", "Operador","Concepto","Importe"]
-    
+    const [anticipos, setAnticipos] =useState([])
+    const headings =["Serie", "Folio", "Fecha", "Personal","Concepto","Importe"]
+
+    async function findAnticipos(){
+        setAnticipos(await getAnticipos())
+    }
+
     return(
         <>
             <h1 className="title">Anticipos</h1>
+            <SearchBar filters={headings} function={null}/>
             <div className="frame">
-                <ul className="table-header">
-                    <li></li>
-                    {headings.map(heading=>{
-                        return(
-                            <li>{heading}</li>
-                        )
-                    })}
-                </ul>
-                {rows.map(row=>{
-                    return(
-                        <ul>
-                            <li className="pointer">Ver / Editar</li>
-                            {row.map(column=>{
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            {headings.map(heading=>{
                                 return(
-                                    <li>{column}</li>
+                                    <th key={heading}>{heading}</th>
                                 )
                             })}
-                        </ul>
-                    )
-                })}
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {anticipos.map(anticipo=>{
+                            return(
+                                <tr key={`${anticipo.serie} ${anticipo.folio}`} className="row">
+                                    <td className="pointer" onClick={() => {openAnticipo(anticipo.serie, anticipo.folio)}}>Abrir</td>
+                                    <td>{anticipo.serie}</td>
+                                    <td>{anticipo.folio}</td>
+                                    <td>{anticipo.fecha.split('T')[0]}</td>
+                                    <td>{anticipo.personal.nombres} {anticipo.personal.primer_apellido} {anticipo.personal.segundo_apellido}</td>
+                                    <td>{anticipo.concepto}</td>
+                                    <td>$ {anticipo.importe}</td>
+                                    <td onClick={async ()=> {await deleteAnticipo(anticipo.serie, anticipo.folio); findAnticipos()}} className="delete pointer">Eliminar</td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
             </div>
-            <br/>
-           <div className="button new ">
-                <img src={Nuevo} alt=""/>
-                <span>Nuevo Anticipo</span>
-           </div>
+            <div onClick={()=>newAnticipo()} className="button new ">
+                    <img src={Nuevo} alt=""/>
+                    <span>Nuevo Anticipo</span>
+            </div>
         </>
     )
 }

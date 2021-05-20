@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react'
+import {latestCliente, createCliente} from '../../Useful Functions/Cliente'
 
 export default function ClienteNew(){
     
@@ -9,40 +10,19 @@ export default function ClienteNew(){
     },[])
 
     async function getLatest(){
-        const response = await fetch(`${localStorage.getItem('server-url')}/cliente/latest`,{
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                } 
-            })
-        setLatest(await response.json())
+        setLatest(await latestCliente())
     }
 
-    async function submit(e){
+    function submit(e){
         e.preventDefault()
-        const result = window.confirm('¿Desea guardar los cambios?')
-        if(!result) return 
-
-        const naviera = {
+        const cliente = {
             clave: document.getElementById('clave').value,
             razon_social: document.getElementById('razon_social').value,
             rfc: document.getElementById('rfc').value,
             telefono: document.getElementById('telefono').value,
             domicilio: document.getElementById('domicilio').value,
         }
-
-        const response = await fetch(`${localStorage.getItem('server-url')}/cliente/create`,{
-            method: 'POST',
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                    'Content-Type': 'application/json',
-                },
-            body: JSON.stringify(naviera)
-            })
-        if (response.status < 300) {
-            alert(await response.json())
-            return window.location.replace('/cliente')
-        }else return alert('Error!')
-        
+        createCliente(cliente)
     }
 
     return(

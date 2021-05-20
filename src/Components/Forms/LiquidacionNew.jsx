@@ -1,4 +1,8 @@
 import React, {useEffect, useState} from 'react'
+import {getPersonal} from '../../Useful Functions/Personal'
+import {latestLiquidacion, createLiquidacion} from '../../Useful Functions/Liquidacion'
+import {openOrden, getSingleOrden} from '../../Useful Functions/Orden'
+import {getSingleAnticipo, openAnticipo} from '../../Useful Functions/Anticipo'
 
 const {ipcRenderer} = window.require('electron')
 
@@ -12,7 +16,7 @@ export default function LiquidacionNew(){
     const [total, setTotal] = useState()
 
     useEffect(()=>{
-        getPersonal()
+        findPersonal()
         getLatest()
     },[])
 
@@ -21,21 +25,11 @@ export default function LiquidacionNew(){
     },[ordenes, anticipos, comprobacion])
 
     async function getLatest(){
-        const response = await fetch(`${localStorage.getItem('server-url')}/liquidacion/latest`, {
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                } 
-            })
-        setLatest(await response.json());
+        setLatest(await latestLiquidacion());
     }
 
-    async function getPersonal(){
-        const response = await fetch(`${localStorage.getItem('server-url')}/personal/list`, {
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                } 
-            })
-        setPersonal(await response.json());
+    async function findPersonal(){
+        setPersonal(await getPersonal());
     }
 
     function fillOperador(){
@@ -56,106 +50,52 @@ export default function LiquidacionNew(){
         }
     }
 
-    function openOrden(serie, folio){
-        ipcRenderer.sendSync('create-window',
-        ({
-            width:1200, 
-            height:820, 
-            url: `${process.env.REACT_APP_URL}/orden?serie=${serie}&folio=${folio}&mode=edit`
-        })
-    )
-    }
-
-    function openAnticipo(serie, folio){
-        ipcRenderer.sendSync('create-window',
-        ({
-            width:400, 
-            height:600, 
-            url: `${process.env.REACT_APP_URL}/anticipo?serie=${serie}&folio=${folio}&mode=edit`
-        })
-    )
-    }
-
     async function addOrden(){
         const serie = document.getElementById('orden-serie').value
         const folio = document.getElementById('orden-folio').value
-        try {
-            const response = await fetch(`${localStorage.getItem('server-url')}/orden/find/${serie}/${folio}`,{
-                headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                    'Content-Type': 'application/json',
-                },
-            })
-            
-            if (response.status === 200){
-                const ordenesArray = [...ordenes]
-                const orden = await response.json()
-                
-                function ordenCompare(element){
-                    if (element.serie === orden.serie && element.folio === orden.folio) return true
-                }
-
-                if (ordenesArray.find(ordenCompare)){
-                    return ipcRenderer.sendSync('alert', 'Orden duplicada')
-                }else {
-                    ordenesArray.push({serie: orden.serie, folio: orden.folio, comision: orden.comision})
-                    return setOrdenes(ordenesArray);
-                }
-            }else if (response.status === 202){
-                return ipcRenderer.sendSync('alert', await response.json())
+        const orden = await getSingleOrden(serie, folio)
+        
+        if (orden){
+            const ordenesArray = [...ordenes]
+            function ordenCompare(element){
+                if (element.serie === orden.serie && element.folio === orden.folio) return true
             }
-            return ipcRenderer.sendSync('alert', "Error!")
-        } catch (error) {
-            return console.log(error);
-        }
+            if (ordenesArray.find(ordenCompare)){
+                return ipcRenderer.sendSync('alert', 'Orden duplicada')
+            }else {
+                ordenesArray.push({serie: orden.serie, folio: orden.folio, comision: orden.comision})
+                return setOrdenes(ordenesArray);
+            }
+        }else return ipcRenderer.sendSync('alert', 'Orden no existe')
     }
 
     function removeOrden(orden){
         const ordenesArray = [...ordenes]
-        
         function ordenCompare(element){
            return orden.serie === element.serie && orden.folio === element.folio
         }
-
         if (ordenesArray.findIndex(ordenCompare) > -1){
             ordenesArray.splice(ordenesArray.findIndex(ordenCompare), 1)
         }
         setOrdenes(ordenesArray)
-        
     }
 
     async function addAnticipo(){
         const serie = document.getElementById('anticipo-serie').value
         const folio = document.getElementById('anticipo-folio').value
-        try {
-            const response = await fetch(`${localStorage.getItem('server-url')}/anticipo/find/${serie}/${folio}`,{
-                headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                    'Content-Type': 'application/json',
-                },
-            })
-            
-            if (response.status === 200){
+        const anticipo = await getSingleAnticipo(serie, folio)
+            if (anticipo){
                 const anticipoArray = [...anticipos]
-                const anticipo = await response.json()
-                
                 function anticipoCompare(element){
                     if (element.serie === anticipo.serie && element.folio === anticipo.folio) return true
                 }
-
                 if (anticipoArray.find(anticipoCompare)){
                     return ipcRenderer.sendSync('alert', 'Anticipo duplicado')
                 }else {
                     anticipoArray.push({serie: anticipo.serie, folio: anticipo.folio, importe: anticipo.importe})
                     return setAnticipos(anticipoArray);
                 }
-            }else if (response.status === 202){
-                return ipcRenderer.sendSync('alert', await response.json())
-            }
-            return ipcRenderer.sendSync('alert', "Error!")
-        } catch (error) {
-            return console.log(error);
-        }
+            }else ipcRenderer.sendSync('alert', 'Anticipo no existe')
     }
     
     function removeAnticipo(anticipo){
@@ -174,20 +114,16 @@ export default function LiquidacionNew(){
     function addComprobacion(){
         const concepto = document.getElementById('comp-concepto').value
         const importe = document.getElementById('comp-importe').value
-    
         const comprobacionArray = [...comprobacion]
-
         comprobacionArray.push({concepto, importe})
         setComporbacion(comprobacionArray);
     }
     
     function removeComprobacion(comprobante){
         const comprobacionArray = [...comprobacion]
-      
         function comprobacionCompare(element){
            return comprobante.concepto === element.concepto && comprobante.importe === element.importe
         }
-
         if (comprobacionArray.findIndex(comprobacionCompare) > -1){
             comprobacionArray.splice(comprobacionArray.findIndex(comprobacionCompare), 1)
         }
@@ -196,9 +132,6 @@ export default function LiquidacionNew(){
 
     async function submit(e){
         e.preventDefault()
-        const result = window.confirm('¿Desea guardar los cambios?')
-        if (!result) return
-        
         const liquidacion = {
             folio: document.getElementById('folio').value,
             fecha: document.getElementById('fecha').value,
@@ -210,26 +143,9 @@ export default function LiquidacionNew(){
                 return {serie: anticipo.serie, folio: anticipo.folio}
             }),
             comprobacion,
-            importe: document.getElementById('total').value
+            importe: total
         }
-        
-        const response = await fetch(`${localStorage.getItem('server-url')}/liquidacion/create`,{
-            method: 'POST',
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                    'Content-Type': 'application/json',
-                },
-            body: JSON.stringify(liquidacion)
-        })
-
-        if (response.status === 200){
-            ipcRenderer.sendSync('alert', await response.json())
-            return window.location.replace('/liquidacion')
-        }else if (response.status === 202){
-            return ipcRenderer.sendSync('alert',(await response.json()).join('\n'))
-        }
-        return ipcRenderer.sendSync('alert', 'Error!')
-
+        createLiquidacion(liquidacion)
     }
 
     function calculateTotal(){

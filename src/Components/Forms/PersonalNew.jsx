@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react'
+import {createPersonal, latestPersonal} from '../../Useful Functions/Personal'
 
 export default function PersonalNew(){
     
@@ -9,19 +10,11 @@ export default function PersonalNew(){
     const [latest, setLatest] = useState()
     
     async function getLatest(){
-        const response = await fetch(`${localStorage.getItem('server-url')}/personal/latest`,{
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                } 
-            })
-        setLatest(await response.json())
+        setLatest(await latestPersonal())
     }
 
-    async function submit(e){
+    function submit(e){
         e.preventDefault()
-        const result = window.confirm('¿Desea guardar los cambios?')
-        if(!result) return
-        
         const personal = {
             clave: document.getElementById('clave').value,
             nombres: document.getElementById('nombres').value,
@@ -34,20 +27,7 @@ export default function PersonalNew(){
             fecha_alta: document.getElementById('fecha_alta').value,
             telefono: document.getElementById('telefono').value,
         }
-        
-        console.log(personal.fecha_baja);
-        const response = await fetch(`${localStorage.getItem('server-url')}/personal/create`,{
-            method: 'POST',
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                    'Content-Type': 'application/json',
-                },
-            body: JSON.stringify(personal)
-            })
-        if (response.status < 300) {
-            alert(await response.json())
-            return window.location.replace('/personal')
-        }else return alert('Error!')
+        createPersonal(personal)
     }
 
     return(

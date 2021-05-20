@@ -1,45 +1,63 @@
 import React, {useState, useEffect} from 'react'
 import Nuevo from '../../Assets/Nuevo.svg'
+import SearchBar from '../SearchBar'
+import {newMantenimiento, openMantenimiento, deleteMantenimiento, getMantenimiento} from '../../Useful Functions/Mantenimiento'
 
-function MantenimientoFrame (props){
+const {ipcRenderer} = window.require('electron')
+
+function MantenimientoFrame (){
+    
+    const [mantenimiento, setMantenimiento] = useState([])
+
     useEffect(()=>{
-        // API CALL FOR ANTICIPOS LIST
+        findMantenimiento()
     },[])
 
-    const[rows, setRows] =useState([[1,2,3]])
+    const headings =["Folio", "Unidad", "Fecha de Inicio", "Fecha de Cierre", "Ubicacion", "Descripcion"]
     
-    const headings =["No. de Unidad", "Motor", "Placas"]
-    
+    async function findMantenimiento(){
+        setMantenimiento(await getMantenimiento());
+    }
+
     return(
         <>
             <h1 className="title">Mantenimiento</h1>
+            <SearchBar filters={headings} function={null}/>
             <div className="frame">
-                <ul className="table-header">
-                    <li></li>
-                    {headings.map(heading=>{
-                        return(
-                            <li>{heading}</li>
-                        )
-                    })}
-                </ul>
-                {rows.map(row=>{
-                    return(
-                        <ul>
-                            <li className="pointer">Ver / Editar</li>
-                            {row.map(column=>{
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            {headings.map(heading=>{
                                 return(
-                                    <li>{column}</li>
+                                    <th key={heading}>{heading}</th>
                                 )
                             })}
-                        </ul>
-                    )
-                })}
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {mantenimiento.map(orden=>{
+                            return(
+                                <tr key={orden.folio} className="row">
+                                    <td onClick={()=> openMantenimiento(orden.folio)} className="pointer">Abrir</td>
+                                    <td>{orden.folio}</td>
+                                    <td>{orden.unidad.clave}</td>
+                                    <td>{orden.fecha_inicio.split('T')[0]}</td>
+                                    <td>{orden.fecha_cierre ? orden.fecha_cierre.split('T')[0] : null}</td>
+                                    <td>{orden.ubicacion}</td>
+                                    <td>{orden.descripcion}</td>
+                                    <td onClick={async ()=> {await deleteMantenimiento(orden.folio); findMantenimiento()}} className="pointer delete">Borrar</td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
             </div>
-            <br/>
-           <div className="button new ">
+            <div onClick={()=> newMantenimiento()} className="button new ">
                 <img src={Nuevo} alt=""/>
-                <span>Nueva Unidad</span>
-           </div>
+                <span>Orden de Mantenimiento</span>
+            </div>
         </>
     )
 }

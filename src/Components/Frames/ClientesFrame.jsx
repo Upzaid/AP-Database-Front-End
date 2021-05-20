@@ -1,44 +1,18 @@
 import React, {useState, useEffect} from 'react'
 import Nuevo from '../../Assets/Nuevo.svg'
 import SearchBar from '../SearchBar'
+import {getClientes, newCliente, openCliente, deleteCliente} from '../../Useful Functions/Cliente'
 
-const { ipcRenderer } = window.require("electron");
-
-function ClientesFrame (props){
+function ClientesFrame (){
     useEffect(()=>{
-        getClientes()
+        findClientes()
     },[])
 
     const[clientes, setClientes] =useState([[1,2,3]])
     const headings =["Clave", "Razon Social", "R.F.C.", "Direccion"]
     
-    async function getClientes(){
-        const response = await fetch(`${localStorage.getItem('server-url')}/cliente/list`, {
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                } 
-            })
-        setClientes(await response.json());
-    }
-
-    function openCliente(clave){
-        ipcRenderer.sendSync('create-window',
-            ({
-                width:400, 
-                height:700, 
-                url: `${process.env.REACT_APP_URL}/cliente?clave=${clave}&mode=edit`
-            })
-        )
-    }
-    
-    function newCliente(){
-        ipcRenderer.sendSync('create-window',
-            ({
-                width:400, 
-                height:700, 
-                url: `${process.env.REACT_APP_URL}/cliente`
-            })
-        )
+    async function findClientes(){
+        setClientes(await getClientes())
     }
 
     return(
@@ -47,26 +21,31 @@ function ClientesFrame (props){
             <SearchBar filters={headings} function={null}/>
             <div className="frame">
                 <table>
-                    <tr>
-                        <th></th>
-                        {headings.map(heading=>{
+                    <thead>
+                        <tr>
+                            <th></th>
+                            {headings.map(heading=>{
+                                return(
+                                    <th key={heading}>{heading}</th>
+                                )
+                            })}
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {clientes.map(cliente=>{
                             return(
-                                <th>{heading}</th>
+                                <tr key={cliente.clave} className="row">
+                                    <td onClick={()=> openCliente(cliente.clave)} className="pointer">Abrir</td>
+                                    <td>{cliente.clave}</td>
+                                    <td>{cliente.razon_social}</td>
+                                    <td>{cliente.rfc}</td>
+                                    <td>{cliente.domicilio}</td>
+                                    <td onClick={async ()=>{await deleteCliente(cliente.clave); findClientes()}} className="pointer delete">Borrar</td>
+                                </tr>
                             )
                         })}
-                    </tr>
-                    {clientes.map(cliente=>{
-                        return(
-                            <tr className="row">
-                                <td onClick={()=> openCliente(cliente.clave)} className="pointer">Abrir</td>
-                                <td>{cliente.clave}</td>
-                                <td>{cliente.razon_social}</td>
-                                <td>{cliente.rfc}</td>
-                                <td>{cliente.domicilio}</td>
-                                <td className="pointer delete">Borrar</td>
-                            </tr>
-                        )
-                    })}
+                    </tbody>
                 </table>
             </div>
             <div onClick={()=>{newCliente()}} className="button new ">

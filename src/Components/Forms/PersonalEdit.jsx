@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import {useLocation} from 'react-router-dom'
+import {getSinglePersonal, updatePersonal} from '../../Useful Functions/Personal'
 
 function PersonalEdit (){
 
@@ -14,19 +15,11 @@ function PersonalEdit (){
     const clave = searchParams.get('clave')
 
     async function findPersonal(){
-        const response = await fetch(`${localStorage.getItem('server-url')}/personal/find/${clave}`,{
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                } 
-            })
-        setPersonal([await response.json()])
+        setPersonal([await getSinglePersonal(clave)])
     }
 
-    async function submit(e){
+    function submit(e){
         e.preventDefault()
-        const result = window.confirm('¿Desea guardar los cambios?')
-        if(!result) return
-        
         const newPersonal = {
             clave: personal[0].clave,
             nombres: document.getElementById('nombres').value,
@@ -39,18 +32,7 @@ function PersonalEdit (){
             fecha_alta: document.getElementById('fecha_alta').value,
             fecha_baja: document.getElementById('fecha_baja').value
         }
-        
-        const response = await fetch(`${localStorage.getItem('server-url')}/personal/edit`,{
-            method: 'PUT',
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                    'Content-Type': 'application/json'
-                },
-            body: JSON.stringify(newPersonal)
-            })
-        
-        if (response.status < 300) return alert('Personal actualizado exitosamente')
-        return alert('Error!')
+        updatePersonal(newPersonal)
     }
 
     return(

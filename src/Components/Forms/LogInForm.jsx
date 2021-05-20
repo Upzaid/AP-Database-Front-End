@@ -52,7 +52,7 @@ function LogInForm(){
 
     return(
         <div className="login" onSubmit={(e)=>{logIn(e)}}>
-            <img classname="logo" src={LogoText} alt=""/>
+            <img className="logo" src={LogoText} alt=""/>
             <form action="">
                 <label htmlFor="">Nombre de Usuario: </label>
                 <input type="text" name="" id="username" required/>

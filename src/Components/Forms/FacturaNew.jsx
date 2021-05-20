@@ -1,4 +1,7 @@
 import React, {useState, useEffect} from 'react'
+import {getClientes} from '../../Useful Functions/Cliente'
+import {createFactura, latestFactura} from '../../Useful Functions/Factura'
+import {getSingleOrden, openOrden} from '../../Useful Functions/Orden'
 
 const { ipcRenderer } = window.require('electron')
 
@@ -9,25 +12,15 @@ export default function FacturaNew(){
 
     useEffect(()=>{
         getLatest()
-        getClientes()
+        findClientes()
     },[])
 
-    async function getClientes(){
-        const response = await fetch(`${localStorage.getItem('server-url')}/cliente/list`, {
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                } 
-            })
-        setClientes(await response.json());
+    async function findClientes(){
+        setClientes(await getClientes());
     }
 
     async function getLatest(){
-        const response = await fetch(`${localStorage.getItem('server-url')}/factura/latest`,{
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                } 
-            })
-        setLatest(await response.json())
+        setLatest(await latestFactura())
     }
 
     function fillClaveReceptor (){
@@ -48,58 +41,40 @@ export default function FacturaNew(){
         }
     }
 
-    async function getOrden(){
+    async function addOrden(){
         const serie = document.getElementById('sre').value
         const folio = document.getElementById('flo').value
-        try {
-            const response = await fetch(`${localStorage.getItem('server-url')}/orden/find/${serie}/${folio}`,{
-                headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                    'Content-Type': 'application/json',
-                },
-            })
-            
-            if (response.status === 200){
-                const ordenesArray = [...ordenes]
-                const orden = await response.json()
-                
-                function ordenCompare(element){
-                    if (element.serie === orden.serie && element.folio === orden.folio) return true
-                }
-
-                if (ordenesArray.find(ordenCompare)){
-                    return ipcRenderer.sendSync('alert', 'Orden duplicada')
-                }else {
-                    ordenesArray.push({serie: orden.serie, folio: orden.folio})
-                    return setOrdenes(ordenesArray);
-                }
-            }else if (response.status === 202){
-                return ipcRenderer.sendSync('alert', await response.json())
+        const orden = await getSingleOrden(serie, folio)
+        
+        if (orden){
+            const ordenesArray = [...ordenes]
+        
+            function ordenCompare(element){
+                if (element.serie === orden.serie && element.folio === orden.folio) return true
             }
-            return ipcRenderer.sendSync('alert', "Error!")
-        } catch (error) {
-            return console.log(error);
-        }
+
+            if (ordenesArray.find(ordenCompare)){
+                return ipcRenderer.sendSync('alert', 'Orden duplicada')
+            }else {
+                ordenesArray.push({serie: orden.serie, folio: orden.folio})
+                return setOrdenes(ordenesArray);
+            }
+        }else return ipcRenderer.sendSync('alert', 'Orden no existe')
     }
 
     function removeOrden(orden){
         const ordenesArray = [...ordenes]
-        
         function ordenCompare(element){
            return orden.serie === element.serie && orden.folio === element.folio
         }
-
         if (ordenesArray.findIndex(ordenCompare) > -1){
             ordenesArray.splice(ordenesArray.findIndex(ordenCompare), 1)
         }
         setOrdenes(ordenesArray)
-        
     }
 
-    async function submit(e){
+    function submit(e){
         e.preventDefault()
-        const result = ipcRenderer.sendSync('confirm','¿Desea guardar los cambios?')
-        if (!result) return
         
         const factura ={
             serie : document.getElementById('serie').value,
@@ -109,23 +84,7 @@ export default function FacturaNew(){
             ordenes: ordenes,
             total : document.getElementById('total').value,      
         }
-        
-        const response = await fetch(`${localStorage.getItem('server-url')}/factura/create`,{
-            method: 'POST',
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                    'Content-Type': 'application/json',
-                },
-            body: JSON.stringify(factura)
-        })
-
-        if (response.status === 200){
-            ipcRenderer.sendSync('alert', await response.json())
-            return window.location.replace('/factura')
-        }else if (response.status === 202){
-            return ipcRenderer.sendSync('alert',(await response.json()).join('\n'))
-        }
-        return ipcRenderer.sendSync('alert', 'Error!')
+        createFactura(factura)
     }
 
     return(
@@ -155,11 +114,12 @@ export default function FacturaNew(){
                     <input type="text" id="sre"/>
                     <label >Folio:</label>
                     <input type="number" id="flo"/>
-                    <button onClick={()=> getOrden()} type="button" className="btn">+</button>
+                    <button onClick={()=> addOrden()} type="button" className="btn">+</button>
                     <br /> <br />
                     <table>
                         <thead>
                             <tr>
+                                <th></th>
                                 <th>Serie</th>
                                 <th>Folio</th>
                                 <th></th>
@@ -169,6 +129,7 @@ export default function FacturaNew(){
                             {ordenes.map(orden=>{
                                 return(
                                     <tr key={`${orden.serie} ${orden.folio}`} className="row">
+                                        <td onClick={()=> openOrden(orden.serie, orden.folio)} className="pointer">Abrir</td>
                                         <td>{orden.serie}</td>
                                         <td>{orden.folio}</td>
                                         <td onClick={()=> removeOrden(orden)} className="delete pointer">Remover</td>

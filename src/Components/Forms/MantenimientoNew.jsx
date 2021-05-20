@@ -1,29 +1,20 @@
 import React, {useEffect, useState} from 'react'
-
-const {ipcRenderer} = window.require('electron')
+import {createMantenimiento, latestMantenimiento} from '../../Useful Functions/Mantenimiento'
 
 export default function MantenimientoNew(){
 
-    const [latest, setLatest] = useState([])
+    const [latest, setLatest] = useState()
 
     useEffect(()=>{
         getLatest()
     }, [])
 
     async function getLatest(){
-        const response = await fetch(`${localStorage.getItem('server-url')}/mantenimiento/latest`, {
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                }
-        })
-        setLatest(await response.json())
+        setLatest(await latestMantenimiento())
     }
 
-    async function submit(e){
+    function submit(e){
         e.preventDefault()
-        const result = ipcRenderer.sendSync('confirm', '¿Desea guardar los cambios?')
-        if(!result) return
-
         const mantenimiento ={
             folio : document.getElementById('folio').value,
             fecha_inicio: document.getElementById('fecha_inicio').value,
@@ -33,23 +24,7 @@ export default function MantenimientoNew(){
             descripcion: document.getElementById('descripcion').value,
             costo: document.getElementById('costo').value,
         }
-
-        const response = await fetch(`${localStorage.getItem('server-url')}/mantenimiento/create`,{
-            method: 'POST',
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                    'Content-Type': 'application/json',
-                },
-            body: JSON.stringify(mantenimiento)
-        })
-
-        if (response.status === 200){
-            ipcRenderer.sendSync('alert', await response.json())
-            return window.location.replace('/mantenimiento')
-        }else if (response.status === 202){
-            return ipcRenderer.sendSync('alert',(await response.json()).join('\n'))
-        }
-        return ipcRenderer.sendSync('alert', 'Error!')
+        createMantenimiento(mantenimiento)
     }
 
     return(
@@ -57,7 +32,7 @@ export default function MantenimientoNew(){
             <h1 className="title">Nueva Orden de Mantenimiento</h1>
             <form onSubmit={(e)=>{submit(e)}}>
                 <label >Folio:</label>
-                <input type="number" id="folio" required defaultValue={latest.folio ? latest.folio + 1: null}/>
+                <input type="number" id="folio" required defaultValue={latest ? latest.folio + 1: null}/>
                 <br />
                 <label >Fecha de Inicio:</label>
                 <input type="date" id="fecha_inicio" required defaultValue={ new Date().toISOString().split('T')[0]}/>

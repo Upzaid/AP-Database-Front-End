@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import {useLocation} from 'react-router-dom'
-
-const { ipcRenderer } = window.require('electron')
+import {getSingleCliente, updateCliente} from '../../Useful Functions/Cliente'
 
 export default function ClienteEdit(){
 
@@ -12,23 +11,15 @@ export default function ClienteEdit(){
     const [cliente, setCliente] = useState([])
     
     useEffect(()=>{
-        getCliente()
+        findCliente()
     },[])
 
-    async function getCliente(){
-        const response = await fetch(`${localStorage.getItem('server-url')}/cliente/find/${clave}`,{
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                } 
-            })
-        setCliente([await response.json()])
+    async function findCliente(){
+        setCliente([await getSingleCliente(clave)])
     }
 
-    async function submit(e){
+    function submit(e){
         e.preventDefault()
-        const result = ipcRenderer.sendSync('confirm','¿Desea guardar los cambios?')
-        if(!result) return 
-
         const newCliente = {
             clave: cliente[0].clave,
             razon_social: document.getElementById('razon_social').value,
@@ -37,18 +28,7 @@ export default function ClienteEdit(){
             domicilio: document.getElementById('domicilio').value,
         }
 
-        const response = await fetch(`${localStorage.getItem('server-url')}/cliente/edit`,{
-            method: 'PUT',
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                    'Content-Type': 'application/json',
-                },
-            body: JSON.stringify(newCliente)
-            })
-            
-        if (response.status < 300) {
-            return ipcRenderer.sendSync('alert', await response.json())
-        }else return ipcRenderer.sendSync('alert','Error!')
+        updateCliente(newCliente)
     }
 
     return(

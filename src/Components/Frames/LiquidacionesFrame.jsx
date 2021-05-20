@@ -1,45 +1,58 @@
 import React, {useState, useEffect} from 'react'
 import Nuevo from '../../Assets/Nuevo.svg'
+import SearchBar from '../SearchBar'
+import {newLiquidacion, openLiquidacion, deleteLiquidacion, getLiquidaciones} from '../../Useful Functions/Liquidacion' 
 
-function LiquidacionesFrame (props){
+
+function LiquidacionesFrame (){
     useEffect(()=>{
-        // API CALL FOR LIQUIDACIONES LIST
+        findLiquidaciones()
     },[])
 
-    const[rows, setRows] =useState([])
-    
-    const headings =["Folio", "Fecha", "Operador", "Anticipos", "Importe"]
-    
+    const[liquidaciones, setLiquidaciones] =useState([])
+    const headings =["Folio", "Fecha", "Operador", "Importe"]
+
+    async function findLiquidaciones(){
+        setLiquidaciones(await getLiquidaciones())
+    }
+
     return(
         <>
             <h1 className="title">Liquidaciones</h1>
+            <SearchBar filters={headings} function={null}/>
             <div className="frame">
-                <ul className="table-header">
-                    <li></li>
-                    {headings.map(heading=>{
-                        return(
-                            <li>{heading}</li>
-                        )
-                    })}
-                </ul>
-                {rows.map(row=>{
-                    return(
-                        <ul>
-                            <li className="pointer">Ver / Editar</li>
-                            {row.map(column=>{
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            {headings.map(heading=>{
                                 return(
-                                    <li>{column}</li>
+                                    <th key={heading}>{heading}</th>
                                 )
                             })}
-                        </ul>
-                    )
-                })}
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {liquidaciones.map(liquidacion=>{
+                            return(
+                                <tr key={liquidacion.folio} className="row">
+                                    <td onClick={()=> openLiquidacion(liquidacion.folio)} className="pointer">Abrir</td>
+                                    <td>{liquidacion.folio}</td>
+                                    <td>{liquidacion.fecha.split('T')[0] }</td>
+                                    <td>{liquidacion.operador.nombres} {liquidacion.operador.primer_apellido} {liquidacion.operador.segundo_apellido}</td>
+                                    <td>{liquidacion.importe}</td>
+                                    <td onClick={async ()=>{await deleteLiquidacion(liquidacion.folio); findLiquidaciones()}} className="delete pointer">Eliminar</td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
             </div>
-            <br/>
-           <div className="button new ">
+            <div onClick={()=>newLiquidacion()} className="button new ">
                 <img src={Nuevo} alt=""/>
                 <span>Nueva Liquidacion</span>
-           </div>
+            </div>
         </>
     )
 }

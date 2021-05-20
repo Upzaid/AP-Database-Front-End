@@ -1,45 +1,48 @@
 import React, {useState, useEffect} from 'react'
 import Nuevo from '../../Assets/Nuevo.svg'
+import SearchBar from '../SearchBar'
 
 function ContenedoresFrame (props){
     useEffect(()=>{
         // API CALL FOR ANTICIPOS LIST
     },[])
 
-    const[rows, setRows] =useState([[1,2,3]])
+    const[rows, setRows] =useState([[1,2]])
     
-    const headings =["No. de Unidad", "Motor", "Placas"]
+    const headings =["Tamaño", "Dimensiones"]
     
     return(
         <>
             <h1 className="title">Contenedores</h1>
+            <SearchBar filters={headings} function={null}/>
             <div className="frame">
-                <ul className="table-header">
-                    <li></li>
-                    {headings.map(heading=>{
+                <table>
+                    <tr>
+                        <th></th>
+                        {headings.map(heading=>{
+                            return(
+                                <th>{heading}</th>
+                            )
+                        })}
+                    </tr>
+                    {rows.map(row=>{
                         return(
-                            <li>{heading}</li>
+                            <tr className="row">
+                                <td className="pointer">Abrir</td>
+                                {row.map(column=>{
+                                    return(
+                                        <td>{column}</td>
+                                    )
+                                })}
+                            </tr>
                         )
                     })}
-                </ul>
-                {rows.map(row=>{
-                    return(
-                        <ul>
-                            <li className="pointer">Ver / Editar</li>
-                            {row.map(column=>{
-                                return(
-                                    <li>{column}</li>
-                                )
-                            })}
-                        </ul>
-                    )
-                })}
+                </table>
             </div>
-            <br/>
-           <div className="button new ">
+            <div className="button new ">
                 <img src={Nuevo} alt=""/>
                 <span>Nuevo Contenedor</span>
-           </div>
+            </div>
         </>
     )
 }

@@ -42,7 +42,7 @@ function FacturasFrame (){
 
     function newFactura(){
         ipcRenderer.sendSync('create-window',({
-            width:400, 
+            width:500, 
             height:700, 
             url: `${process.env.REACT_APP_URL}/factura?mode=new`
         }))
@@ -50,7 +50,7 @@ function FacturasFrame (){
 
     function openFactura(serie, folio){
         ipcRenderer.sendSync('create-window',({
-            width:400, 
+            width:500, 
             height:700, 
             url: `${process.env.REACT_APP_URL}/factura?serie=${serie}&folio=${folio}&mode=edit`
         }))
@@ -62,15 +62,18 @@ function FacturasFrame (){
             <SearchBar filters={headings} function={null}/>
             <div className="frame">
                 <table>
-                    <tr>
-                        <th></th>
-                        {headings.map(heading=>{
-                            return(
-                                <th>{heading}</th>
-                            )
-                        })}
-                        <th></th>
-                    </tr>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            {headings.map(heading=>{
+                                return(
+                                    <th key={heading}>{heading}</th>
+                                    )
+                                })}
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
                     {facturas.map(factura=>{
                         return(
                             <tr key={`${factura.serie} ${factura.folio}`} className="row">
@@ -84,6 +87,7 @@ function FacturasFrame (){
                             </tr>
                         )
                     })}
+                    </tbody>
                 </table>
             </div>
             <div onClick={()=> newFactura()} className="button new ">

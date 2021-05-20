@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react'
+import {createNaviera, latestNaviera} from '../../Useful Functions/Naviera'
 
 export default function NavieraNew(){
     
@@ -9,19 +10,11 @@ export default function NavieraNew(){
     },[])
 
     async function getLatest(){
-        const response = await fetch(`${localStorage.getItem('server-url')}/naviera/latest`,{
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                } 
-            })
-        setLatest(await response.json())
+        setLatest(await latestNaviera())
     }
 
     async function submit(e){
         e.preventDefault()
-        const result = window.confirm('¿Desea guardar los cambios?')
-        if(!result) return 
-
         const naviera = {
             clave: document.getElementById('clave').value,
             razon_social: document.getElementById('razon_social').value,
@@ -29,20 +22,7 @@ export default function NavieraNew(){
             telefono: document.getElementById('telefono').value,
             domicilio: document.getElementById('domicilio').value,
         }
-
-        const response = await fetch(`${localStorage.getItem('server-url')}/naviera/create`,{
-            method: 'POST',
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                    'Content-Type': 'application/json',
-                },
-            body: JSON.stringify(naviera)
-            })
-        if (response.status < 300) {
-            alert(await response.json())
-            return window.location.replace('/naviera')
-        }else return alert('Error!')
-        
+        createNaviera(naviera)
     }
 
     return(

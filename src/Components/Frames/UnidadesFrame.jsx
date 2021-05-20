@@ -1,63 +1,18 @@
 import React, {useState, useEffect} from 'react'
 import Nuevo from '../../Assets/Nuevo.svg'
 import SearchBar from '../SearchBar'
+import {newUnidad, openUnidad, deleteUnidad, getUnidades} from '../../Useful Functions/Unidad'
 
-const {ipcRenderer} = window.require('electron')
-
-function UnidadesFrame (props){
+function UnidadesFrame (){
     useEffect(()=>{
-        getUnidades()
+        findUnidades()
     },[])
 
     const[unidades, setUnidades] =useState([])
-    
     const headings =["No. de Unidad", "Modelo", "Motor", "Placas"]
     
-    async function getUnidades(){
-        const response = await fetch(`${localStorage.getItem('server-url')}/unidad/list`, {
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                } 
-            })
-        setUnidades(await response.json())
-    }
-
-    function newUnidad(){
-        ipcRenderer.sendSync('create-window',
-            ({
-                width:400, 
-                height:700, 
-                url: `${process.env.REACT_APP_URL}/unidad?mode=new`
-            })
-        )
-    }
-    
-    function openUnidad(clave){
-        ipcRenderer.sendSync('create-window',
-            ({
-                width:400, 
-                height:700, 
-                url: `${process.env.REACT_APP_URL}/unidad?clave=${clave}&mode=edit`
-            })
-        )
-    }
-
-    async function deleteUnidad(clave){
-        const result = ipcRenderer.sendSync('confirm', `¿Desea eliminar la unidad ${clave}?`)
-        
-        if (!result) return
-
-        const response = await fetch(`${localStorage.getItem('server-url')}/unidad/delete`,{
-            method: 'DELETE',
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                    'Content-Type': 'application/json',
-                },
-            body: JSON.stringify({clave})
-        })
-        
-        ipcRenderer.sendSync('alert', await response.json())
-        getUnidades()
+    async function findUnidades(){
+        setUnidades(await getUnidades())
     }
 
     return(
@@ -86,7 +41,7 @@ function UnidadesFrame (props){
                                     <td>{unidad.modelo}</td>
                                     <td>{unidad.motor}</td>
                                     <td>{unidad.placas}</td>
-                                    <td onClick={()=> deleteUnidad(unidad.clave)} className="pointer delete">Borrar</td>
+                                    <td onClick={async ()=> {await deleteUnidad(unidad.clave); findUnidades()}} className="pointer delete">Borrar</td>
                                 </tr>
                             )
                         })}

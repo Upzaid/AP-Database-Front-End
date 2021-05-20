@@ -1,44 +1,18 @@
 import React, {useState, useEffect} from 'react'
 import Nuevo from '../../Assets/Nuevo.svg'
 import SearchBar from '../SearchBar'
-
-const { ipcRenderer } = window.require("electron");
+import {getPersonal, newPersonal, openPersonal, deletePersonal} from '../../Useful Functions/Personal'
 
 function PersonalFrame (){
     useEffect(()=>{
-        getPersonal()
+        findPersonal()
     },[])
 
     const [personal, setPersonal] = useState([])
     const headings =["Clave", "Nombre", "R.F.C.","Telefono"]
 
-    async function getPersonal(){
-        const response = await fetch(`${localStorage.getItem('server-url')}/personal/list`, {
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                } 
-            })
-        setPersonal(await response.json());
-    }
-
-    function openPersonal(clave){
-        ipcRenderer.sendSync('create-window',
-            ({
-                width:400, 
-                height:800, 
-                url: `${process.env.REACT_APP_URL}/personal?clave=${clave}&mode=edit`
-            })
-        )
-    }
-    
-    function newPersonal(){
-        ipcRenderer.sendSync('create-window',
-            ({
-                width:400, 
-                height:800, 
-                url: `${process.env.REACT_APP_URL}/personal?mode=new`
-            })
-        ) 
+    async function findPersonal(){
+        setPersonal(await getPersonal());
     }
 
     return(
@@ -47,27 +21,31 @@ function PersonalFrame (){
             <SearchBar filters={headings} function={null}/>
             <div className="frame">
                 <table>
-                    <tr>
-                        <th></th>
-                        {headings.map(heading=>{
+                    <thead>
+                        <tr>
+                            <th></th>
+                            {headings.map(heading=>{
+                                return(
+                                    <th key={heading}>{heading}</th>
+                                )
+                            })}
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {personal.map(personal=>{
                             return(
-                                <th>{heading}</th>
+                                <tr key={personal.clave} className="row">
+                                    <td onClick={()=>openPersonal(personal.clave)} className="pointer">Abrir</td>
+                                    <td>{personal.clave}</td>
+                                    <td>{personal.nombres} {personal.primer_apellido} {personal.segundo_apellido}</td>
+                                    <td>{personal.rfc}</td>
+                                    <td>{personal.telefono}</td>
+                                    <td onClick={async ()=>{await deletePersonal(personal.clave); findPersonal()}} className="delete pointer">Borrar</td>
+                                </tr>
                             )
                         })}
-                        <th></th>
-                    </tr>
-                    {personal.map(personal=>{
-                        return(
-                            <tr key={personal.clave} className="row">
-                                <td onClick={()=>openPersonal(personal.clave)} className="pointer">Abrir</td>
-                                <td>{personal.clave}</td>
-                                <td>{personal.nombres} {personal.primer_apellido} {personal.segundo_apellido}</td>
-                                <td>{personal.rfc}</td>
-                                <td>{personal.telefono}</td>
-                                <td className="delete pointer">Borrar</td>
-                            </tr>
-                        )
-                    })}
+                    </tbody>
                 </table>
             </div>
             <div onClick={()=> newPersonal()} className="button new ">

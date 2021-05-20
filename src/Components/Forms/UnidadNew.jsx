@@ -1,14 +1,10 @@
-import React, {useEffect, useState} from 'react'
-
-const {ipcRenderer} = window.require('electron')
+import React from 'react'
+import {createUnidad} from '../../Useful Functions/Unidad'
 
 export default function UnidadNew(){
 
-    async function submit(e){
+    function submit(e){
         e.preventDefault()
-        const result = ipcRenderer.sendSync('confirm','¿Desea guardar los cambios?')
-        if (!result) return
-        
         const unidad = {
             clave: document.getElementById('clave').value,
             modelo: document.getElementById('modelo').value,
@@ -17,27 +13,7 @@ export default function UnidadNew(){
             niv: document.getElementById('niv').value,
             descripcion: document.getElementById('descripcion').value,
         }
-        
-        try {
-            const response = await fetch(`${localStorage.getItem('server-url')}/unidad/create`,{
-                method: 'POST',
-                headers : {
-                        'auth-token': localStorage.getItem('auth-token'),
-                        'Content-Type': 'application/json',
-                    },
-                body: JSON.stringify(unidad)
-                })
-            if (response.status === 200){
-                ipcRenderer.sendSync('alert', await response.json())
-                return window.location.replace('/unidad')
-            }else if (response.status === 202){
-                return ipcRenderer.sendSync('alert',(await response.json()).join('\n'))
-            }else {
-                return ipcRenderer.sendSync('alert', 'Error!')
-            }
-        } catch (error) {
-            return ipcRenderer.sendSync('alert', 'Error!')
-        }
+        createUnidad(unidad)
     }
 
     return(

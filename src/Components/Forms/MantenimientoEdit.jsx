@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {useLocation} from 'react-router-dom'
-
-const {ipcRenderer} = window.require('electron')
+import {updateMantenimiento, getSingleMantenimiento} from '../../Useful Functions/Mantenimiento'
 
 export default function MantenimientoEdit(){
 
@@ -12,24 +11,16 @@ export default function MantenimientoEdit(){
     const [mantenimiento, setMantenimiento] = useState([])
 
     useEffect(()=>{
-        getMantenimiento()
+        findMantenimiento()
     }, [])
 
-    async function getMantenimiento(){
-        const response = await fetch(`${localStorage.getItem('server-url')}/mantenimiento/find/${folio}`,{
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                } 
-            })
-       setMantenimiento([await response.json()]);
+    async function findMantenimiento(){
+       setMantenimiento([await getSingleMantenimiento(folio)]);
     }
 
-    async function submit(e){
+    function submit(e){
         e.preventDefault()
-        const result = ipcRenderer.sendSync('confirm', '¿Desea guardar los cambios?')
-        if(!result) return
-
-        const mantenimiento ={
+        const newMantenimiento ={
             folio : folio,
             fecha_inicio: document.getElementById('fecha_inicio').value,
             fecha_cierre: document.getElementById('fecha_cierre').value,
@@ -38,22 +29,7 @@ export default function MantenimientoEdit(){
             descripcion: document.getElementById('descripcion').value,
             costo: document.getElementById('costo').value,
         }
-
-        const response = await fetch(`${localStorage.getItem('server-url')}/mantenimiento/edit`,{
-            method: 'PUT',
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                    'Content-Type': 'application/json',
-                },
-            body: JSON.stringify(mantenimiento)
-        })
-
-        if (response.status === 200){
-            return ipcRenderer.sendSync('alert', await response.json())
-        }else if (response.status === 202){
-            return ipcRenderer.sendSync('alert',(await response.json()).join('\n'))
-        }
-        return ipcRenderer.sendSync('alert', 'Error!')
+        updateMantenimiento(newMantenimiento)
     }
 
     return(

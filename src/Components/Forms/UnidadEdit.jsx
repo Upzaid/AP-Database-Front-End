@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {useLocation} from 'react-router-dom'
-
-const {ipcRenderer} = window.require('electron')
+import {updateUnidad, getSingleUnidad} from '../../Useful Functions/Unidad'
 
 export default function UnidadEdit(){
 
@@ -12,25 +11,16 @@ export default function UnidadEdit(){
     const [unidad, setUnidad] =useState([])
 
     useEffect(()=>{
-        getUnidad()
+        findUnidad()
     },[])
 
-    async function getUnidad(){
-        const response = await fetch(`${localStorage.getItem('server-url')}/unidad/find/${clave}`,{
-            headers : {
-                    'auth-token': localStorage.getItem('auth-token'),
-                    'Content-Type': 'application/json',
-                },
-            })
-        setUnidad(await response.json());
+    async function findUnidad(){
+        setUnidad(await getSingleUnidad(clave));
     }
 
-    async function submit(e){
+    function submit(e){
         e.preventDefault()
-        const result = ipcRenderer.sendSync('confirm','¿Desea guardar los cambios?')
-        if (!result) return
-        
-        const unidad = {
+        const newUnidad = {
             clave: clave,
             modelo: document.getElementById('modelo').value,
             motor: document.getElementById('motor').value,
@@ -38,27 +28,7 @@ export default function UnidadEdit(){
             niv: document.getElementById('niv').value,
             descripcion: document.getElementById('descripcion').value,
         }
-        
-        try {
-            const response = await fetch(`${localStorage.getItem('server-url')}/unidad/edit`,{
-                method: 'PUT',
-                headers : {
-                        'auth-token': localStorage.getItem('auth-token'),
-                        'Content-Type': 'application/json',
-                    },
-                body: JSON.stringify(unidad)
-                })
-            if (response.status === 200){
-                ipcRenderer.sendSync('alert', await response.json())
-                return window.location.replace('/unidad')
-            }else if (response.status === 202){
-                return ipcRenderer.sendSync('alert',(await response.json()).join('\n'))
-            }else{
-            return ipcRenderer.sendSync('alert', 'Error!')
-            }
-        } catch (error) {
-            return ipcRenderer.sendSync('alert', 'Error!')
-        }
+        updateUnidad(newUnidad)
     }
 
     return(
