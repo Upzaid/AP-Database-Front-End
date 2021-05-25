@@ -103,9 +103,14 @@ export async function updateLiquidacion (liquidacion){
         body: JSON.stringify(liquidacion)
         })
     if (response.status === 200) {
+        window.location.replace(`/liquidacion?folio=${liquidacion.folio}&mode=edit`)
         return ipcRenderer.sendSync('alert', await response.json())
     }else if (response.status === 202){
         return ipcRenderer.sendSync('alert', (await response.json()).join('\n'))
     }
     return ipcRenderer.sendSync('alert', 'Error!')
+}
+
+export function printLiquidacion(liquidacion){
+    ipcRenderer.sendSync('print-liquidacion', liquidacion)
 }

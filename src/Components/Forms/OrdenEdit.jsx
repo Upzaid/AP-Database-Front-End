@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {useLocation} from 'react-router-dom'
-import {getSingleOrden, updateOrden} from '../../Useful Functions/Orden'
+import {getSingleOrden, updateOrden, printOrden} from '../../Useful Functions/Orden'
 import {getNavieras} from '../../Useful Functions/Naviera'
 import {getClientes} from '../../Useful Functions/Cliente'
 import {getUnidades} from '../../Useful Functions/Unidad'
@@ -29,7 +29,6 @@ export default function OrdenEdit(){
 
     useEffect(()=>{
         if (orden[0]){
-            console.log(orden);
             setStatus()
             setTamano()
             setNaviera()
@@ -328,7 +327,7 @@ export default function OrdenEdit(){
                 </div>
                 <br />
                 <div>
-                    <button style={{marginRight: '200px'}} className="btn">Imprimir</button>
+                    <button onClick={()=>printOrden(orden)} type="button" style={{marginRight: '200px'}} className="btn">Imprimir</button>
                     <button type="submit" className="btn">Guardar</button>
                 </div>
             </form>

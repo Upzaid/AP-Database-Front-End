@@ -106,9 +106,14 @@ export async function updateOrden (orden){
         body: JSON.stringify(orden)
         })
     if (response.status === 200) {
+        window.location.replace(`/orden?serie=${orden.serie}&folio=${orden.folio}&mode=edit`)
         return ipcRenderer.sendSync('alert', await response.json())
     }else if (response.status === 202){
         return ipcRenderer.sendSync('alert', (await response.json()).join('\n'))
     }
     return ipcRenderer.sendSync('alert', 'Error!')
+}
+
+export function printOrden(orden){
+    ipcRenderer.sendSync('print-orden', orden)
 }

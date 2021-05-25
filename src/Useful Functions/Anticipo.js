@@ -110,3 +110,7 @@ export async function updateAnticipo (anticipo){
     }
     return ipcRenderer.sendSync('alert', 'Error!')
 }
+
+export function printAnticipos(anticipos){
+    ipcRenderer.sendSync('print-anticipos', anticipos)
+}

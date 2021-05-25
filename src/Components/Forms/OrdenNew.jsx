@@ -5,6 +5,8 @@ import {getClientes} from '../../Useful Functions/Cliente'
 import {getPersonal} from '../../Useful Functions/Personal'
 import {getUnidades} from '../../Useful Functions/Unidad'
 
+const {ipcRenderer} = window.require('electron')
+
 export default function OrdenNew(){
 
     const [navieras, setNavieras] = useState([])
@@ -142,6 +144,10 @@ export default function OrdenNew(){
         createOrden(orden)
     }
 
+    function print(){
+
+    }
+
     return(
         <div >
             <h1 className="title">Nueva Orden de Trabajo</h1>
@@ -257,7 +263,6 @@ export default function OrdenNew(){
                 </div>
                 <br />
                 <div>
-                    <button type="button" style={{marginRight: '200px'}} className="btn">Imprimir</button>
                     <button type="submit" className="btn">Guardar</button>
                 </div>
             </form>

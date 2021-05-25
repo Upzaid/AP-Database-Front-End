@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {useLocation} from 'react-router-dom'
 import {getPersonal} from '../../Useful Functions/Personal'
-import {getSingleLiquidacion, updateLiquidacion} from '../../Useful Functions/Liquidacion'
+import {getSingleLiquidacion, updateLiquidacion, printLiquidacion} from '../../Useful Functions/Liquidacion'
 import {openOrden, getSingleOrden} from '../../Useful Functions/Orden'
 import {getSingleAnticipo, openAnticipo} from '../../Useful Functions/Anticipo'
 
@@ -312,7 +312,7 @@ export default function LiquidacionNew(){
                 </div>
                 <br />
                 <div className="c2">
-                    <button type="button" className="btn">PDF</button>
+                    <button onClick={()=> printLiquidacion(liquidacion)} type="button" className="btn">PDF</button>
                     <button type="submit" className="btn">Guardar</button>
                 </div>
             </form>

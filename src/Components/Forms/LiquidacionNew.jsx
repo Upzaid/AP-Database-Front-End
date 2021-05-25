@@ -281,10 +281,7 @@ export default function LiquidacionNew(){
                     <span id="total"> ${total}</span>
                 </div>
                 <br />
-                <div className="c2">
-                    <button type="button" className="btn">PDF</button>
                     <button type="submit" className="btn">Guardar</button>
-                </div>
             </form>
         </div>
     )
