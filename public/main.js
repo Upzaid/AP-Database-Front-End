@@ -1,11 +1,12 @@
 const env = require('dotenv').config()
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, ipcMain, shell} = require('electron')
 const path = require('path')
 const electron = require('electron')
-const { config } = require('process')
 
-const ipcMain = electron.ipcMain
+const {OrdenPDF} = require('../src/PDF-Functions/OrdenPDF')
+const {LiquidacionPDF} = require('../src/PDF-Functions/LiquidacionPDF')
+const {AnticiposPDF} = require('../src/PDF-Functions/AnticiposPDF')
 
 function createWindow () {
   // Create the browser window.
@@ -94,5 +95,20 @@ ipcMain.on('alert', (event, message) =>{
 
   electron.dialog.showMessageBoxSync(options)
   
+  event.returnValue = null
+})
+
+ipcMain.on('print-orden', (event, orden)=>{
+  OrdenPDF(orden)
+  event.returnValue = null
+})
+
+ipcMain.on('print-liquidacion', (event, liquidacion)=>{
+  LiquidacionPDF(liquidacion)
+  event.returnValue = null
+})
+
+ipcMain.on('print-anticipos', (event, anticipos)=>{
+  AnticiposPDF(anticipos)
   event.returnValue = null
 })
