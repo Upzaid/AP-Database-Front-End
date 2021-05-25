@@ -1,39 +1,10 @@
 const PDFDocument = require('pdfkit')
 const fs = require('fs')
 const path = require('path')
-const {exec} = require('child_process')
-
-const orden ={
-    fecha: 'DD-MM-AAAA',
-    serie: 'AAA',
-    folio: '1234',
-    naviera: {
-        razon_social: 'Razon Social Naviera'
-    },
-    ruta: 'Ruta del servicio aqui mas texto para la ruta',
-    tipo_servicio: 'Tipo de servicio',
-    origen: 'Origen del servicio',
-    consignatario: {
-        razon_social:'Razon Social del Consignatario'
-    },
-    destino_agencia: 'Destino o agencia Aduanal',
-    contenedor: 'Numero de contenedor aqui',
-    tamano: "40' HC",
-    sello: 'Sello',
-    booking: 'Booking',
-    observaciones: 'Aqui van todas las observaciones o detalles que se deban agregar',
-    operador: {
-        nombres: 'Primer y Segundo Nombre',
-        primer_apellido: 'Apellido 1',
-        segundo_apellido: 'Apellido 2',
-    },
-    unidad:{
-        clave: 69,
-        placas: 'PLACAS'
-    }
-}
+const {shell} = require('electron')
 
 function OrdenPDF(orden){
+    console.log(__dirname, 'print');
     const doc = new PDFDocument({
         font: 'Helvetica',
         size: 'LETTER',
@@ -56,7 +27,8 @@ function OrdenPDF(orden){
     
     // Logo Frame
     doc.roundedRect(x, y, 100, 100, r)
-    doc.image('../Assets/Logo.png', x+0.5, y+2, {width: 98})
+    doc.image(path.join(__dirname,'../Assets/Logo.png'), x+0.5, y+2, {width: 98})
+    
     // Title Frame
     doc.roundedRect(x + 100, y, width-2*x-100*2, 100, r)
     x = width-x-2*100
@@ -128,7 +100,7 @@ function OrdenPDF(orden){
 
     doc.roundedRect(x +(width-20)/2, y, (width-20)*0.25, 140, r)
     doc.roundedRect(x +(width-20)*0.75, y, (width-20)*0.25, 140, r).stroke()
-    doc.image('qr_code.jpeg',x +(width-20)*0.76, y +1 , {width: 138})
+    doc.image(path.join(__dirname, 'qr_code.jpeg'),x +(width-20)*0.76, y +1 , {width: 138})
     
     y += 140
 
@@ -156,7 +128,7 @@ function OrdenPDF(orden){
     doc.fillColor('black').text('FECHA', x + width-120 , y+10, {
         width: 100,
         align: 'center'
-    }).text(orden.fecha, x + width-120 , y+35, {
+    }).text(orden.fecha.split('T')[0], x + width-120 , y+35, {
         width: 100,
         align: 'center'
     })
@@ -164,7 +136,7 @@ function OrdenPDF(orden){
     doc.text('FOLIO', x + width-120, y + 25, {
         width: 100,
         align: 'center'
-    }).text(`${orden.serie}-${orden.folio}`, x + width-120, y + 50, {
+    }).text(`${orden.serie} - ${orden.folio}`, x + width-120, y + 50, {
         width: 100,
         align: 'center'
     })
@@ -227,16 +199,16 @@ function OrdenPDF(orden){
     doc.text('RET %4', x + (width-20)*0.80 + 2, y + +164, {width: (width-20) * 0.12})
     doc.text('TOTAL', x + (width-20)*0.80 + 2, y + +182, {width: (width-20) * 0.12})
     
-    doc.text(`$${orden.flete}`, x + (width-20)*0.92 + 2, y + +20, {width: (width-20) * 0.08})
-    doc.text(`$${orden.maniobra}`, x + (width-20)*0.92 + 2, y + +38, {width: (width-20) * 0.08})
-    doc.text(`$${orden.almacenaje}`, x + (width-20)*0.92 + 2, y + +56, {width: (width-20) * 0.08})
-    doc.text(`$${orden.flete_falso}`, x + (width-20)*0.92 + 2, y + +74, {width: (width-20) * 0.08})
-    doc.text(`$${orden.reexpedicion}`, x + (width-20)*0.92 + 2, y + +92, {width: (width-20) * 0.08})
-    doc.text(`$${orden.dif_kilomentraje}`, x + (width-20)*0.92 + 2, y + +110, {width: (width-20) * 0.08})
-    doc.text(`$${orden.subtotal}`, x + (width-20)*0.92 + 2, y + +128, {width: (width-20) * 0.08})
-    doc.text(`$${orden.iva}`, x + (width-20)*0.92 + 2, y + +146, {width: (width-20) * 0.08})
-    doc.text(`$${orden.retencion}`, x + (width-20)*0.92 + 2, y + +164, {width: (width-20) * 0.08})
-    doc.text(`$${orden.total}`, x + (width-20)*0.92 + 2, y + +182, {width: (width-20) * 0.08})
+    doc.text(!orden.flete ? null : `$${orden.flete}`, x + (width-20)*0.92 + 2, y + +20, {width: (width-20) * 0.08})
+    doc.text(!orden.maniobra ? null : `$${orden.maniobra}`, x + (width-20)*0.92 + 2, y + +38, {width: (width-20) * 0.08})
+    doc.text(!orden.almacenaje ? null :`$${orden.almacenaje}`, x + (width-20)*0.92 + 2, y + +56, {width: (width-20) * 0.08})
+    doc.text(!orden.flete_falso ? null :`$${orden.flete_falso}`, x + (width-20)*0.92 + 2, y + +74, {width: (width-20) * 0.08})
+    doc.text(!orden.reexpedicion ? null :`$${orden.reexpedicion}`, x + (width-20)*0.92 + 2, y + +92, {width: (width-20) * 0.08})
+    doc.text(!orden.dif_kilometraje ? null :`$${orden.dif_kilometraje}`, x + (width-20)*0.92 + 2, y + +110, {width: (width-20) * 0.08})
+    doc.text(!orden.subtotal ? null : `$${orden.subtotal}`, x + (width-20)*0.92 + 2, y + +128, {width: (width-20) * 0.08})
+    doc.text(!orden.iva ? null : `$${orden.iva}`, x + (width-20)*0.92 + 2, y + +146, {width: (width-20) * 0.08})
+    doc.text(!orden.retencion ? null : `$${orden.retencion}`, x + (width-20)*0.92 + 2, y + +164, {width: (width-20) * 0.08})
+    doc.text(!orden.total ? null :`$${orden.total}`, x + (width-20)*0.92 + 2, y + +182, {width: (width-20) * 0.08})
     y += 180
 
     doc.text()
@@ -267,9 +239,9 @@ function OrdenPDF(orden){
 
     doc.end()
 
-    writeStream.on('finish', ()=>{
-        exec(path.join(__dirname,'orden.pdf'))
+    writeStream.on('finish', () =>{
+        shell.openPath('orden.pdf')
     })
 }
 
-OrdenPDF(orden)
+exports.OrdenPDF = OrdenPDF
