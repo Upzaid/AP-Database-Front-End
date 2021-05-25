@@ -134,7 +134,8 @@ export default function LiquidacionNew(){
         e.preventDefault()
         const liquidacion = {
             folio: document.getElementById('folio').value,
-            fecha: document.getElementById('fecha').value,
+            fecha_inicio: document.getElementById('fecha_inicio').value,
+            fecha_cierre: document.getElementById('fecha_cierre').value,
             operador: document.getElementById('operador').value,
             ordenes: ordenes.map(orden =>{
                 return {serie: orden.serie, folio: orden.folio}
@@ -159,8 +160,10 @@ export default function LiquidacionNew(){
         <div className="login">
             <h1 className="title">Nueva Liquidacion</h1>
             <form onSubmit={(e)=> submit(e)} className="form" >
-                <label >Fecha:</label>
-                <input type="date" id="fecha" defaultValue={new Date().toISOString().split('T')[0]} required/>
+                <label >Fecha de Inicio:</label>
+                <input type="date" id="fecha_inicio" defaultValue={new Date().toISOString().split('T')[0]} required/>
+                <label >Fecha de Cierre:</label>
+                <input type="date" id="fecha_cierre" defaultValue={new Date().toISOString().split('T')[0]} required/>
                 <label >Folio:</label>
                 <input type="number" id="folio" defaultValue={latest ? latest.folio + 1 : null} required/>
                 <label >Operador:</label>

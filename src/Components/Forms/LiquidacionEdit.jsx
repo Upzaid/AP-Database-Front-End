@@ -163,7 +163,8 @@ export default function LiquidacionNew(){
         e.preventDefault()
         const newLiquidacion = {
             folio: folio,
-            fecha: document.getElementById('fecha').value,
+            fecha_inicio: document.getElementById('fecha_inicio').value,
+            fecha_cierre: document.getElementById('fecha_cierre').value,
             operador: document.getElementById('operador').value,
             ordenes: ordenes.map(orden =>{
                 return {serie: orden.serie, folio: orden.folio}
@@ -192,8 +193,10 @@ export default function LiquidacionNew(){
             {liquidacion.map(liquidacion =>{
                 return(
                     <form onSubmit={(e)=> submit(e)} className="form" >
-                <label >Fecha:</label>
-                <input type="date" id="fecha" defaultValue={liquidacion.fecha.split('T')[0] } required/>
+                <label >Fecha de Inicio:</label>
+                <input type="date" id="fecha_inicio" defaultValue={liquidacion.fecha_inicio.split('T')[0] } required/>
+                <label >Fecha de Cierre:</label>
+                <input type="date" id="fecha_cierre" defaultValue={liquidacion.fecha_cierre.split('T')[0] } required/>
                 <label >Operador:</label>
                 <input onChange={()=> fillOperadorSelect()} type="number" id="operador" required defaultValue={liquidacion.operador.clave}/>
                 <select onChange={()=> fillOperador()} id="operador-select" required>

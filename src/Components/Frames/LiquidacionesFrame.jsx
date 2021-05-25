@@ -10,7 +10,7 @@ function LiquidacionesFrame (){
     },[])
 
     const[liquidaciones, setLiquidaciones] =useState([])
-    const headings =["Folio", "Fecha", "Operador", "Importe"]
+    const headings =["Folio", "Fecha de Inicio", "Fecha de Cierre", "Operador", "Importe"]
 
     async function findLiquidaciones(){
         setLiquidaciones(await getLiquidaciones())
@@ -39,7 +39,8 @@ function LiquidacionesFrame (){
                                 <tr key={liquidacion.folio} className="row">
                                     <td onClick={()=> openLiquidacion(liquidacion.folio)} className="pointer">Abrir</td>
                                     <td>{liquidacion.folio}</td>
-                                    <td>{liquidacion.fecha.split('T')[0] }</td>
+                                    <td>{liquidacion.fecha_inicio.split('T')[0] }</td>
+                                    <td>{liquidacion.fecha_cierre.split('T')[0] }</td>
                                     <td>{liquidacion.operador.nombres} {liquidacion.operador.primer_apellido} {liquidacion.operador.segundo_apellido}</td>
                                     <td>{liquidacion.importe}</td>
                                     <td onClick={async ()=>{await deleteLiquidacion(liquidacion.folio); findLiquidaciones()}} className="delete pointer">Eliminar</td>
