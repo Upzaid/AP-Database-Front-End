@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import {useLocation} from 'react-router-dom'
-import {updateAnticipo, getSingleAnticipo} from '../../Useful Functions/Anticipo'
-import {getPersonal, newPersonal, updatePersonal} from '../../Useful Functions/Personal'
+import {updateAnticipo, getSingleAnticipo, printAnticipos} from '../../Useful Functions/Anticipo'
+import {getPersonal} from '../../Useful Functions/Personal'
 
 export default function AnticipoEdit(){
 
@@ -16,8 +16,6 @@ export default function AnticipoEdit(){
     useEffect(()=>{
         findAnticipo()
         findPersonal()
-        console.log(anticipo);
-
     },[])
 
     useEffect(()=>{
@@ -108,11 +106,11 @@ export default function AnticipoEdit(){
                         <label htmlFor="">Importe:</label>
                         <input type="number"  id="importe" step="0.01" defaultValue={anticipo.importe} required/>
                         <br/>
+                        <button onClick={()=> printAnticipos([anticipo])} className="btn" type="button">PDF</button>
                         <button className="btn" type="submit">Guardar</button>
                     </form>
                 )
             })}
-            
         </div>
     )
 }

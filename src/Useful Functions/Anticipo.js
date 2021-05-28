@@ -63,7 +63,9 @@ export async function createAnticipo(anticipo){
     })
     
     if (response.status === 200){
-        return ipcRenderer.sendSync('alert', await response.json())
+        ipcRenderer.sendSync('alert', await response.json())
+        window.location.replace('/anticipo')
+        return 
     }else if (response.status === 202){
         return ipcRenderer.send('alert', (await response.json()).join('\n'))
     }
@@ -104,13 +106,34 @@ export async function updateAnticipo (anticipo){
         body: JSON.stringify(anticipo)
         })
     if (response.status === 200) {
-        return ipcRenderer.sendSync('alert', await response.json())
+        ipcRenderer.sendSync('alert', await response.json())
+        window.location.replace(`/anticipo?serie=${anticipo.serie}&folio=${anticipo.folio}&mode=edit`)
+        return 
     }else if (response.status === 202){
         return ipcRenderer.sendSync('alert', (await response.json()).join('\n'))
     }
     return ipcRenderer.sendSync('alert', 'Error!')
 }
 
+export async function getAnticiposRange(startDate, endDate){
+    const response = await fetch(`${localStorage.getItem('server-url')}/anticipo/range?start=${startDate}&end=${endDate}`,{
+        headers : {
+                'auth-token': localStorage.getItem('auth-token'),
+                'Content-Type': 'application/json',
+            },
+        })
+    return await response.json()
+}
+
 export function printAnticipos(anticipos){
     ipcRenderer.sendSync('print-anticipos', anticipos)
+}
+
+export function openPrintAnticipos(){
+    return (ipcRenderer.sendSync('create-window',  ({
+        width:600, 
+        height:600, 
+        url: `${process.env.REACT_APP_URL}/anticipo/print`
+        }))
+    )
 }
