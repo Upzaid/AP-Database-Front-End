@@ -64,7 +64,7 @@ export async function createFactura(factura){
     
     if (response.status === 200){
         ipcRenderer.sendSync('alert', await response.json())
-        return window.location.replace(process.env.NODE_ENV === 'development' ? `/factura` : `#factura`)
+        return window.location.reload()
     }else if (response.status === 202){
         return ipcRenderer.send('alert', (await response.json()).join('\n'))
     }

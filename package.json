@@ -60,7 +60,8 @@
     "forge": {
       "packagerConfig": {
         "name": "Autotransportes Pantaco",
-        "asar": true
+        "asar": true,
+        "icon": "src/Assets/Logo.png"
       },
       "makers": [
         {

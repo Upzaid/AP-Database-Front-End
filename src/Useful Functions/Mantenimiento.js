@@ -61,7 +61,9 @@ export async function createMantenimiento(mantenimiento){
     })
     
     if (response.status === 200){
-        return ipcRenderer.sendSync('alert', await response.json())
+        ipcRenderer.sendSync('alert', await response.json())
+        window.location.reload()
+        return 
     }else if (response.status === 202){
         return ipcRenderer.send('alert', (await response.json()).join('\n'))
     }

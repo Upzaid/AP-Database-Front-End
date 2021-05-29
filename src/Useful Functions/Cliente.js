@@ -62,7 +62,7 @@ export async function createCliente(cliente){
     
     if (response.status === 200){
         ipcRenderer.sendSync('alert', await response.json())
-        return window.location.replace(process.env.NODE_ENV === 'development' ? '/cliente' : '#cliente')
+        return window.location.reload()
     }else if (response.status === 202){
         return ipcRenderer.send('alert', (await response.json()).join('\n'))
     }

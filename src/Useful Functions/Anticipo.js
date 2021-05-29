@@ -64,7 +64,7 @@ export async function createAnticipo(anticipo){
     
     if (response.status === 200){
         ipcRenderer.sendSync('alert', await response.json())
-        window.location.replace('/anticipo')
+        window.location.reload()
         return 
     }else if (response.status === 202){
         return ipcRenderer.send('alert', (await response.json()).join('\n'))
@@ -107,7 +107,7 @@ export async function updateAnticipo (anticipo){
         })
     if (response.status === 200) {
         ipcRenderer.sendSync('alert', await response.json())
-        window.location.replace(`/anticipo?serie=${anticipo.serie}&folio=${anticipo.folio}&mode=edit`)
+        window.location.reload()
         return 
     }else if (response.status === 202){
         return ipcRenderer.sendSync('alert', (await response.json()).join('\n'))

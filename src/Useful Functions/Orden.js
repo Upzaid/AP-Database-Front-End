@@ -64,7 +64,7 @@ export async function createOrden(orden){
     
     if (response.status === 200){
         ipcRenderer.sendSync('alert', await response.json())
-        return window.location.replace(process.env.NODE_ENV === 'development' ? `/orden` : `#orden`)
+        return window.location.reload()
     }else if (response.status === 202){
         return ipcRenderer.send('alert', (await response.json()).join('\n'))
     }
@@ -106,7 +106,7 @@ export async function updateOrden (orden){
         body: JSON.stringify(orden)
         })
     if (response.status === 200) {
-        window.location.replace(process.env.NODE_ENV === 'development' ? `/orden?serie=${orden.serie}&folio=${orden.folio}&mode=edit` : `#orden?serie=${orden.serie}&folio=${orden.folio}&mode=edit`)
+        window.location.reload()
         return ipcRenderer.sendSync('alert', await response.json())
     }else if (response.status === 202){
         return ipcRenderer.sendSync('alert', (await response.json()).join('\n'))

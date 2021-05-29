@@ -62,7 +62,7 @@ export async function createLiquidacion(liquidacion){
     
     if (response.status === 200){
         ipcRenderer.sendSync('alert', await response.json())
-        return window.location.replace(process.env.NODE_ENV === 'development' ? `/liquidacion` : `#liquidacion`)
+        return window.location.reload()
     }else if (response.status === 202){
         return ipcRenderer.send('alert', (await response.json()).join('\n'))
     }
@@ -103,7 +103,7 @@ export async function updateLiquidacion (liquidacion){
         body: JSON.stringify(liquidacion)
         })
     if (response.status === 200) {
-        window.location.replace(process.env.NODE_ENV === 'development' ? `/liquidacion?folio=${liquidacion.folio}&mode=edit` : `#liquidacion?folio=${liquidacion.folio}&mode=edit`)
+        window.location.reload()
         return ipcRenderer.sendSync('alert', await response.json())
     }else if (response.status === 202){
         return ipcRenderer.sendSync('alert', (await response.json()).join('\n'))
