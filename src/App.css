@@ -29,7 +29,7 @@
 }
 
 .side-menu .button {
-  height: 9.09vh;
+  height: 10vh;
   min-width: 220px;
   font-weight: 600;
   color: #f5b420;
@@ -43,7 +43,7 @@
 
 .content-container {
   background-color: #fcfbee;
-  padding: 3%;
+  padding: 20px;
   display: grid;
 }
 
@@ -55,31 +55,46 @@
 
 .frame {
   background-color: white;
-  padding: 1%;
+  padding: 10px;
   border: 1px solid #ddd;
   overflow: scroll;
   max-width: 80vw;
-  height: 80vh;
-  justify-self: center;
+  height: 70vh;
+  display: grid;
 }
 
-ul {
-  display: flex;
-  justify-self: center;
+.row:hover {
+  background-color: #f5b420;
 }
-ul li {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  list-style: none;
-  padding: 10px;
-  height: 40px;
-  min-width: 150px;
+
+table,
+th,
+td {
+  border-collapse: collapse;
+  text-align: center;
   border: 1px solid #ddd;
+  min-width: 100px;
+  font-size: 0.9em;
+  padding: 1px;
 }
 
-.table-header {
-  font-weight: bolder;
+th {
+  min-width: 100px;
+  font-size: 1em;
+  padding: 1px;
+  background-color: white;
+}
+
+td {
+  font-size: 0.8em;
+}
+
+tr:nth-child(odd) {
+  background-color: #f0f0f0;
+}
+
+tr:nth-child(even) {
+  background-color: white;
 }
 
 .new {
@@ -91,7 +106,110 @@ ul li {
 }
 
 .new:hover {
-  background-color: #b5ff98;
+  background-color: #f5b420;
+}
+
+.search {
+  display: grid;
+  grid-template-columns: 1f 1fr 1fr 1fr;
+  height: 30px;
+  justify-items: end;
+}
+.search * {
+  margin-right: 20px;
+  padding: 3px;
+}
+.search select {
+  width: 200px;
+}
+
+.btn,
+input,
+select {
+  background-color: white;
+  border: 1px solid #ddd;
+  padding: 5px;
+}
+
+.btn:hover {
+  background-color: #f5b420;
+}
+
+.login {
+  max-height: 100vh;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+}
+.login img {
+  height: 50vh;
+}
+.login form,
+.login .form {
+  display: grid;
+  border: 1px solid #f5b420;
+  padding: 30px;
+  position: relative;
+  background-color: #fcfbee;
+  margin-top: 30px;
+}
+.login form img,
+.login .form img {
+  max-height: 20px;
+  position: absolute;
+  right: 1px;
+  bottom: 1px;
+}
+
+.success {
+  background-color: #a5f563;
+  padding: 5px;
+}
+
+.error {
+  background-color: #f56863;
+  padding: 5px;
+}
+
+input[type=number] {
+  max-width: 75px;
+}
+
+.delete:hover {
+  background-color: #f3514b;
+}
+
+.c2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.c2 * {
+  padding: 5px;
+}
+
+.c3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+input[id=serie],
+input[id=sre],
+input[id=orden-serie],
+input[id=anticipo-serie] {
+  max-width: 70px;
+}
+
+input[type=date] {
+  max-width: 150px;
+}
+
+label {
+  padding: 3px;
+}
+
+input {
+  margin-bottom: 3px;
+  margin-right: 2px;
 }
 
 /*# sourceMappingURL=App.css.map */

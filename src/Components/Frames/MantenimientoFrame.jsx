@@ -3,8 +3,6 @@ import Nuevo from '../../Assets/Nuevo.svg'
 import SearchBar from '../SearchBar'
 import {newMantenimiento, openMantenimiento, deleteMantenimiento, getMantenimiento} from '../../Useful Functions/Mantenimiento'
 
-const {ipcRenderer} = window.require('electron')
-
 function MantenimientoFrame (){
     
     const [mantenimiento, setMantenimiento] = useState([])
@@ -14,6 +12,7 @@ function MantenimientoFrame (){
     },[])
 
     const headings =["Folio", "Unidad", "Fecha de Inicio", "Fecha de Cierre", "Ubicacion", "Descripcion"]
+    const filters =["Folio", "Fecha de Inicio", "Fecha de Cierre", "Ubicacion", "Descripcion"]
     
     async function findMantenimiento(){
         setMantenimiento(await getMantenimiento());
@@ -22,7 +21,7 @@ function MantenimientoFrame (){
     return(
         <>
             <h1 className="title">Mantenimiento</h1>
-            <SearchBar filters={headings} function={null}/>
+            <SearchBar filters={filters} model="mantenimiento" function={setMantenimiento}/>
             <div className="frame">
                 <table>
                     <thead>
@@ -47,7 +46,7 @@ function MantenimientoFrame (){
                                     <td>{orden.fecha_cierre ? orden.fecha_cierre.split('T')[0] : null}</td>
                                     <td>{orden.ubicacion}</td>
                                     <td>{orden.descripcion}</td>
-                                    <td onClick={async ()=> {await deleteMantenimiento(orden.folio); findMantenimiento()}} className="pointer delete">Borrar</td>
+                                    <td onClick={async ()=> {await deleteMantenimiento(orden.folio); findMantenimiento()}} className="pointer delete">Eliminar</td>
                                 </tr>
                             )
                         })}

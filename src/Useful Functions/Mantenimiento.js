@@ -31,7 +31,7 @@ export function openMantenimiento(folio){
     return ipcRenderer.sendSync('create-window',
         ({
             width:400, 
-            height:600, 
+            height:800, 
             url: `${process.env.REACT_APP_URL}/mantenimiento?folio=${folio}&mode=edit`
         })
     )
@@ -40,7 +40,7 @@ export function openMantenimiento(folio){
 export function newMantenimiento(){
     return ipcRenderer.sendSync('create-window',
         ({
-            width:780, 
+            width:400, 
             height:820, 
             url: `${process.env.REACT_APP_URL}/mantenimiento`
         })

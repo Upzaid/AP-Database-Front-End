@@ -26,10 +26,10 @@ function ConfigWindow(){
         <div className="login">
             <h1 className="title">Configurar Conexion</h1>
             <form className="" onSubmit={(e)=>{checkConnection(e)}}>
-                <label htmlFor="">IPv4 del Servidor:</label>
+                <label >IPv4 del Servidor:</label>
                 <input type="text" id="ip" />
                 <br/>
-                <label htmlFor="">Puerto:</label>
+                <label>Puerto:</label>
                 <input type="text" id="port"/>
                 <br/>
                 <button className="btn" type="submit">Conectar</button>

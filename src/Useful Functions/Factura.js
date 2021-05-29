@@ -32,8 +32,8 @@ export async function latestFactura(){
 export function openFactura(serie, folio){
     return ipcRenderer.sendSync('create-window',
         ({
-            width:400, 
-            height:400, 
+            width: 500, 
+            height: 700, 
             url: `${process.env.REACT_APP_URL}/factura?serie=${serie}&folio=${folio}&mode=edit`
         })
     )
@@ -42,8 +42,8 @@ export function openFactura(serie, folio){
 export function newFactura(){
     return ipcRenderer.sendSync('create-window',
         ({
-            width:400, 
-            height:500, 
+            width: 500, 
+            height: 700, 
             url: `${process.env.REACT_APP_URL}/factura`
         })
     )

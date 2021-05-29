@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import Nuevo from '../../Assets/Nuevo.svg'
 import SearchBar from '../SearchBar'
-import {newAnticipo, openAnticipo, deleteAnticipo, getAnticipos} from '../../Useful Functions/Anticipo'
+import {newAnticipo, openAnticipo, deleteAnticipo, getAnticipos, openPrintAnticipos} from '../../Useful Functions/Anticipo'
 
 function AnticiposFrame (){
     useEffect(()=>{
@@ -10,6 +10,7 @@ function AnticiposFrame (){
 
     const [anticipos, setAnticipos] =useState([])
     const headings =["Serie", "Folio", "Fecha", "Personal","Concepto","Importe"]
+    const filters =["Serie", "Folio", "Fecha","Concepto","Importe"]
 
     async function findAnticipos(){
         setAnticipos(await getAnticipos())
@@ -18,7 +19,7 @@ function AnticiposFrame (){
     return(
         <>
             <h1 className="title">Anticipos</h1>
-            <SearchBar filters={headings} function={null}/>
+            <SearchBar filters={filters} model="anticipo" function={setAnticipos}/>
             <div className="frame">
                 <table>
                     <thead>
@@ -50,9 +51,14 @@ function AnticiposFrame (){
                     </tbody>
                 </table>
             </div>
-            <div onClick={()=>newAnticipo()} className="button new ">
-                    <img src={Nuevo} alt=""/>
-                    <span>Nuevo Anticipo</span>
+            <div className="c2">
+                <div onClick={()=>{openPrintAnticipos()}} style={{justifySelf: 'flex-start'}} className="button new ">
+                        <span>PDF Anticipos</span>
+                </div>
+                <div onClick={()=>newAnticipo()} className="button new ">
+                        <img src={Nuevo} alt=""/>
+                        <span>Nuevo Anticipo</span>
+                </div>
             </div>
         </>
     )

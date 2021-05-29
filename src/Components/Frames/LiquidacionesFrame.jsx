@@ -10,7 +10,8 @@ function LiquidacionesFrame (){
     },[])
 
     const[liquidaciones, setLiquidaciones] =useState([])
-    const headings =["Folio", "Fecha de Inicio", "Fecha de Cierre", "Operador", "Importe"]
+    const headings = ["Folio", "Fecha de Inicio", "Fecha de Cierre", "Operador", "Importe"]
+    const filters = ["Folio", "Fecha de Inicio", "Fecha de Cierre", "Importe"]
 
     async function findLiquidaciones(){
         setLiquidaciones(await getLiquidaciones())
@@ -19,7 +20,7 @@ function LiquidacionesFrame (){
     return(
         <>
             <h1 className="title">Liquidaciones</h1>
-            <SearchBar filters={headings} function={null}/>
+            <SearchBar filters={filters} model='liquidacion' function={setLiquidaciones}/>
             <div className="frame">
                 <table>
                     <thead>
@@ -42,7 +43,7 @@ function LiquidacionesFrame (){
                                     <td>{liquidacion.fecha_inicio.split('T')[0] }</td>
                                     <td>{liquidacion.fecha_cierre.split('T')[0] }</td>
                                     <td>{liquidacion.operador.nombres} {liquidacion.operador.primer_apellido} {liquidacion.operador.segundo_apellido}</td>
-                                    <td>{liquidacion.importe}</td>
+                                    <td>$ {liquidacion.importe}</td>
                                     <td onClick={async ()=>{await deleteLiquidacion(liquidacion.folio); findLiquidaciones()}} className="delete pointer">Eliminar</td>
                                 </tr>
                             )

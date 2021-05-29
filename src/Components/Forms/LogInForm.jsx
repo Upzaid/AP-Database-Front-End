@@ -41,7 +41,7 @@ function LogInForm(){
             // Successful Log in redirect to Main Window set auth token
             localStorage.setItem('auth-token', await response.json())
             
-            return window.location.replace('/')
+            return window.location.replace('/mainwindow')
         
         } catch (err) {
             console.log(err);
@@ -53,7 +53,7 @@ function LogInForm(){
     return(
         <div className="login" onSubmit={(e)=>{logIn(e)}}>
             <img className="logo" src={LogoText} alt=""/>
-            <form action="">
+            <form >
                 <label htmlFor="">Nombre de Usuario: </label>
                 <input type="text" name="" id="username" required/>
                 <br/>

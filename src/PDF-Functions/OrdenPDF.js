@@ -4,7 +4,6 @@ const path = require('path')
 const {shell} = require('electron')
 
 function OrdenPDF(orden){
-    console.log(__dirname, 'print');
     const doc = new PDFDocument({
         font: 'Helvetica',
         size: 'LETTER',

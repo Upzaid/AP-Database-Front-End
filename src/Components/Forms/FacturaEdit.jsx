@@ -28,6 +28,7 @@ export default function FacturaEdit (){
                 return {serie: orden.serie, folio: orden.folio}
             }))
             setReceptor()
+            fillStatus()
         }
     },[factura])
 
@@ -53,6 +54,19 @@ export default function FacturaEdit (){
                 break
             }else{
                 document.getElementById('receptor-select').selectedIndex = 0
+            }
+        }
+    }
+
+    function fillStatus(){
+        const {options} = document.getElementById('estatus')
+        for (let i = 0; i < options.length; i++){
+            console.log(options[i], factura[0].estatus);
+            if (options[i].value == factura[0].estatus){
+                document.getElementById('estatus').selectedIndex = i
+                break
+            }else {
+                document.getElementById('estatus').selectedIndex = 0
             }
         }
     }
@@ -98,6 +112,7 @@ export default function FacturaEdit (){
             receptor : document.getElementById('receptor').value,
             ordenes: ordenes,
             total : document.getElementById('total').value,      
+            estatus : document.getElementById('estatus').value,      
         }
         updateFactura(newFactura)
     }
@@ -161,6 +176,13 @@ export default function FacturaEdit (){
                                 })}
                             </tbody>
                         </table>
+                        <br />
+                        <label >Estatus:</label>
+                        <select id="estatus">
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Pagada">Pagada</option>
+                            <option value="Cancelada">Cancelada</option>
+                        </select>
                         <br />
                     </div>
                     <label >Total:</label>

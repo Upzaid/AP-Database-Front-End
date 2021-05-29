@@ -1,14 +1,24 @@
 const env = require('dotenv').config()
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, ipcMain, shell} = require('electron')
-const path = require('path')
+const {app, BrowserWindow, ipcMain} = require('electron')
 const electron = require('electron')
+const path = require('path')
+const url = require('url')
 
 const {OrdenPDF} = require('../src/PDF-Functions/OrdenPDF')
 const {LiquidacionPDF} = require('../src/PDF-Functions/LiquidacionPDF')
 const {AnticiposPDF} = require('../src/PDF-Functions/AnticiposPDF')
 
 function createWindow () {
+
+  const startUrl = `${process.env.REACT_APP_URL}` || `file://${path.join(__dirname, '../build/index.hmtl')}`
+
+  console.log(url.format({
+    pathname: path.join(__dirname, '../index.html/login'),
+    protocol: 'file:',
+    slashes: true,
+  }));
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1440,
@@ -16,17 +26,17 @@ function createWindow () {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
-      preload: path.join(__dirname, 'preload.js')
+      // preload: path.join(__dirname, 'preload.js')
     },
     icon: './src/Assets/Logo.png'
   })
   
   // and load the url of the app.
-  mainWindow.loadURL(`${process.env.REACT_APP_URL}/login`) // URL Accesspoint to the React App
+  mainWindow.loadURL(startUrl) // URL Accesspoint to the React App
   mainWindow.setMenu(null)
   
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished
@@ -61,8 +71,6 @@ ipcMain.on('create-window', (event, arg) =>{
     icon: './src/Assets/Logo.png',
   })
   window.setMenu(null)
-  // OPEN DEV TOOLS REMOVE FOR PRODUCTION
-  window.openDevTools()
   window.loadURL(arg.url)
 
   event.returnValue = null
@@ -76,17 +84,14 @@ ipcMain.on('confirm', (event, message)=>{
     buttons: ['Cancelar', 'Aceptar'],
     message,
     icon : './src/Assets/Logo.png',
-
   }
   const result = electron.dialog.showMessageBoxSync(options)
-
   if (result === 0) return event.returnValue = false
   return event.returnValue = true
 
 } )
 
 ipcMain.on('alert', (event, message) =>{
-
   const options ={
     type: "none",
     message,

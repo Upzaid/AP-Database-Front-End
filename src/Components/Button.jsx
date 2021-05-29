@@ -1,42 +1,11 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
-function Button (props){
-    
-    useEffect(()=>{
-        if(props.name === 'Inicio'){
-            setActive()
-        }
-    },[])
-
-    function setActive() {
-        const sideMenu = document.querySelector('.side-menu')
-        sideMenu.querySelectorAll('.button').forEach(button=>{
-           
-            if(button.id === props.name && button.classList[button.classList.length-1] === 'active'){
-                return
-            }else if(button.id === props.name){
-                button.classList.toggle('active')
-                return
-            }else {
-                button.classList.remove('active')
-            }
-        })
-    }
-
-    function clickFunction(){
-        setActive()
-        if(props.function){
-
-            props.function()
-        }
-    }
-    
-
+function Button(props){
     return(
-            <div id={props.name} className="button" onClick={()=> clickFunction()}>
-                {props.image ? <img src={props.image} alt=""/> : null}
+        <div onClick={()=>{props.function()}} className="btn pointer">
+                <img src={props.image} alt=""/>
                 <span>{props.name}</span>
-            </div>
+        </div>
     )
 }
 

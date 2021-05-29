@@ -32,7 +32,7 @@ $background-color: #fcfbee;
 
 .side-menu {
   .button {
-    height: 9.09vh;
+    height: 10vh;
     min-width: 220px;
     font-weight: 600;
     color: $accent-color;
@@ -47,7 +47,7 @@ $background-color: #fcfbee;
 
 .content-container {
   background-color: $background-color;
-  padding: 3%;
+  padding: 20px;
   display: grid;
 }
 
@@ -59,43 +59,154 @@ $background-color: #fcfbee;
 
 .frame {
   background-color: white;
-  padding: 1%;
+  padding: 10px;
   border: 1px solid #ddd;
   overflow: scroll;
   max-width: 80vw;
-  height: 80vh;
-  justify-self: center;
+  height: 70vh;
+  display: grid;
 }
 
-ul {
-  display: flex;
-  justify-self: center;
-
-  li {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    list-style: none;
-    padding: 10px;
-    height: 40px;
-    min-width: 150px;
-    border: 1px solid #ddd;
-  }
+.row:hover {
+  background-color: $accent-color;
 }
 
-.table-header {
-  font-weight: bolder;
+table,
+th,
+td {
+  border-collapse: collapse;
+  text-align: center;
+  border: 1px solid #ddd;
+  min-width: 100px;
+  font-size: 0.9em;
+  padding: 1px;
+}
+th {
+  min-width: 100px;
+  font-size: 1em;
+  padding: 1px;
+  background-color: white;
+}
+td {
+  font-size: 0.8em;
+}
+
+tr:nth-child(odd) {
+  background-color: #f0f0f0;
+}
+tr:nth-child(even) {
+  background-color: white;
 }
 
 .new {
   height: 40px;
   background-color: white;
   justify-self: flex-end;
-
   font-size: 0.8em;
   font-weight: 700;
 }
 
 .new:hover {
-  background-color: #b5ff98;
+  background-color: $accent-color;
+}
+
+.search {
+  display: grid;
+  grid-template-columns: 1f 1fr 1fr 1fr;
+  height: 30px;
+  justify-items: end;
+  * {
+    margin-right: 20px;
+    padding: 3px;
+  }
+  select {
+    width: 200px;
+  }
+}
+
+.btn,
+input,
+select {
+  background-color: white;
+  border: 1px solid #ddd;
+  padding: 5px;
+}
+
+.btn:hover {
+  background-color: $accent-color;
+}
+
+.login {
+  max-height: 100vh;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  img {
+    height: 50vh;
+  }
+  form,
+  .form {
+    display: grid;
+    border: 1px solid $accent-color;
+    padding: 30px;
+    position: relative;
+    background-color: $background-color;
+    margin-top: 30px;
+    img {
+      max-height: 20px;
+      position: absolute;
+      right: 1px;
+      bottom: 1px;
+    }
+  }
+}
+
+.success {
+  background-color: #a5f563;
+  padding: 5px;
+}
+.error {
+  background-color: #f56863;
+  padding: 5px;
+}
+
+input[type="number"] {
+  max-width: 75px;
+}
+
+.delete:hover {
+  background-color: #f3514b;
+}
+
+.c2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  * {
+    padding: 5px;
+  }
+}
+
+.c3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+input[id="serie"],
+input[id="sre"],
+input[id="orden-serie"],
+input[id="anticipo-serie"] {
+  max-width: 70px;
+}
+
+input[type="date"] {
+  max-width: 150px;
+}
+
+label {
+  padding: 3px;
+}
+
+input {
+  margin-bottom: 3px;
+  margin-right: 2px;
 }

@@ -5,8 +5,6 @@ import {getClientes} from '../../Useful Functions/Cliente'
 import {getPersonal} from '../../Useful Functions/Personal'
 import {getUnidades} from '../../Useful Functions/Unidad'
 
-const {ipcRenderer} = window.require('electron')
-
 export default function OrdenNew(){
 
     const [navieras, setNavieras] = useState([])

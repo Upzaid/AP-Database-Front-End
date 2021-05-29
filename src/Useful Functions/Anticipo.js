@@ -32,7 +32,7 @@ export async function latestAnticipo(){
 export function openAnticipo(serie, folio){
     return ipcRenderer.sendSync('create-window',
         ({
-            width:400, 
+            width:450, 
             height:600, 
             url: `${process.env.REACT_APP_URL}/anticipo?serie=${serie}&folio=${folio}&mode=edit`
         })
@@ -42,7 +42,7 @@ export function openAnticipo(serie, folio){
 export function newAnticipo(){
     return ipcRenderer.sendSync('create-window',
         ({
-            width:400, 
+            width:450, 
             height:700, 
             url: `${process.env.REACT_APP_URL}/anticipo`
         })

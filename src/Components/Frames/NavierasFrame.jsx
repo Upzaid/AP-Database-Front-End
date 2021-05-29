@@ -12,6 +12,7 @@ function NavierasFrame (){
     const[navieras, setNavieras] =useState([])
     
     const headings =["Clave", "Razon Social", "R.F.C.", "Direccion"]
+    const filter =["Clave", "Razon Social", "RFC", "Direccion"]
 
     async function findNavieras(){
         setNavieras(await getNavieras())
@@ -20,7 +21,7 @@ function NavierasFrame (){
     return(
         <>
             <h1 className="title">Navieras</h1>
-            <SearchBar filters={headings} function={null}/>
+            <SearchBar filters={filter} model="naviera" function={setNavieras}/>
             <div className="frame">
                 <table>
                     <thead>
@@ -43,7 +44,7 @@ function NavierasFrame (){
                                     <td >{naviera.razon_social}</td>
                                     <td >{naviera.rfc}</td>
                                     <td >{naviera.domicilio}</td>
-                                    <td onClick={async ()=> {await deleteNaviera(naviera.clave); findNavieras()}} className="delete pointer">Borrar</td>
+                                    <td onClick={async ()=> {await deleteNaviera(naviera.clave); findNavieras()}} className="delete pointer">Eliminar</td>
                                 </tr>
                             )
                         })}

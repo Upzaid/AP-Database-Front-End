@@ -83,6 +83,7 @@ export default function FacturaNew(){
             receptor : document.getElementById('receptor').value,
             ordenes: ordenes,
             total : document.getElementById('total').value,      
+            estatus : document.getElementById('estatus').value,      
         }
         createFactura(factura)
     }
@@ -138,6 +139,13 @@ export default function FacturaNew(){
                             })}
                         </tbody>
                     </table>
+                    <br />
+                    <label >Estatus:</label>
+                    <select id="estatus">
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Pagada">Pagada</option>
+                            <option value="Cancelada">Cancelada</option>
+                        </select>
                     <br />
                 </div>
                 <label >Total:</label>

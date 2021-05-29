@@ -1,20 +1,18 @@
 import React from 'react'
 import {useLocation} from 'react-router-dom'
-import OrdenEdit from '../Forms/OrdenEdit'
-import OrdenNew from '../Forms/OrdenNew'
+import NavieraEdit from '../Forms/NavieraEdit'
+import NavieraNew from '../Forms/NavieraNew'
 
-export default function Orden(){
-    
+export default function Naviera(){
+
     const {search} = useLocation()
     const searchParams = new URLSearchParams(search)
-    
     const mode = searchParams.get('mode')
 
-    
-    if (mode === 'edit') return(
-        <OrdenEdit />
-    )   
+    if (mode === 'edit')return(
+        <NavieraEdit />
+    ) 
     return(
-        <OrdenNew />
+        <NavieraNew />
     )
 }

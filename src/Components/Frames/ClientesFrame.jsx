@@ -10,6 +10,7 @@ function ClientesFrame (){
 
     const[clientes, setClientes] =useState([[1,2,3]])
     const headings =["Clave", "Razon Social", "R.F.C.", "Direccion"]
+    const filters =["Clave", "Razon Social", "RFC", "Direccion"]
     
     async function findClientes(){
         setClientes(await getClientes())
@@ -18,7 +19,7 @@ function ClientesFrame (){
     return(
         <>
             <h1 className="title">Clientes</h1>
-            <SearchBar filters={headings} function={null}/>
+            <SearchBar filters={filters} model="cliente" function={setClientes}/>
             <div className="frame">
                 <table>
                     <thead>
@@ -41,7 +42,7 @@ function ClientesFrame (){
                                     <td>{cliente.razon_social}</td>
                                     <td>{cliente.rfc}</td>
                                     <td>{cliente.domicilio}</td>
-                                    <td onClick={async ()=>{await deleteCliente(cliente.clave); findClientes()}} className="pointer delete">Borrar</td>
+                                    <td onClick={async ()=>{await deleteCliente(cliente.clave); findClientes()}} className="pointer delete">Eliminar</td>
                                 </tr>
                             )
                         })}

@@ -49,4 +49,4 @@ function AnticiposPDF(anticipos){
     })
 }
 
-exports.AnticiposPDF = AnticipoPDF
+exports.AnticiposPDF = AnticiposPDF

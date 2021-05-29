@@ -10,6 +10,7 @@ function UnidadesFrame (){
 
     const[unidades, setUnidades] =useState([])
     const headings =["No. de Unidad", "Modelo", "Motor", "Placas"]
+    const filters =["Clave", "Modelo", "Motor", "Placas"]
     
     async function findUnidades(){
         setUnidades(await getUnidades())
@@ -18,17 +19,17 @@ function UnidadesFrame (){
     return(
         <>
             <h1 className="title">Unidades</h1>
-            <SearchBar filters={headings} function={null}/>
+            <SearchBar filters={filters} model="unidad" function={setUnidades}/>
             <div className="frame">
                 <table>
                     <thead>
                         <tr>
                             <th></th>
-                            {headings.map(heading=>{
-                                return(
-                                    <th key={heading}>{heading}</th>
-                                )
-                            })}
+                                {headings.map(heading=>{
+                                    return(
+                                        <th key={heading}>{heading}</th>
+                                        )
+                                    })}
                             <th></th>
                         </tr>
                     </thead>
@@ -41,7 +42,7 @@ function UnidadesFrame (){
                                     <td>{unidad.modelo}</td>
                                     <td>{unidad.motor}</td>
                                     <td>{unidad.placas}</td>
-                                    <td onClick={async ()=> {await deleteUnidad(unidad.clave); findUnidades()}} className="pointer delete">Borrar</td>
+                                    <td onClick={async ()=> {await deleteUnidad(unidad.clave); findUnidades()}} className="pointer delete">Eliminar</td>
                                 </tr>
                             )
                         })}

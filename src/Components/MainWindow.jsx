@@ -3,7 +3,6 @@ import React, {useState} from 'react'
 // Assets
 import Anticipos from '../Assets/Anticipos.svg'
 import Clientes from '../Assets/Clientes.svg'
-import Contenedores from '../Assets/Contenedores.svg'
 import Facturas from '../Assets/Facturas.svg'
 import Liquidaciones from '../Assets/Liquidaciones.svg'
 import Mantenimiento from '../Assets/Mantenimiento.svg'
@@ -15,6 +14,8 @@ import Inicio from '../Assets/Inicio.svg'
 
 // Components
 import SideMenu from '../Components/SideMenu/SideMenu'
+
+// Frames
 import InicioFrame from './Frames/InicioFrame'
 import OrdenesFrame from './Frames/OrdenesFrame'
 import FacturasFrame from './Frames/FacturasFrame'
@@ -24,7 +25,6 @@ import ClientesFrame from './Frames/ClientesFrame'
 import NavierasFrame from './Frames/NavierasFrame'
 import PersonalFrame from './Frames/PersonalFrame'
 import UnidadesFrame from './Frames/UnidadesFrame'
-import ContenedoresFrame from './Frames/ContenedoresFrame'
 import MantenimientoFrame from './Frames/MantenimientoFrame'
 
 function MainWindow(){
@@ -41,7 +41,6 @@ function MainWindow(){
         {image: Clientes, name: 'Clientes', function: () =>{setContent(<ClientesFrame />)}}, 
         {image: Personal, name: 'Personal', function: () =>{setContent(<PersonalFrame />)}}, 
         {image: Unidades, name: 'Unidades', function: () =>{setContent(<UnidadesFrame />)}},
-        {image: Contenedores, name: 'Contenedores', function: () =>{setContent(<ContenedoresFrame />)}},
         {image: Mantenimiento, name: 'Mantenimiento', function: () =>{setContent(<MantenimientoFrame />)}},
     ]
    

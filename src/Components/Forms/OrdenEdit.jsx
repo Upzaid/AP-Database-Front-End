@@ -327,7 +327,7 @@ export default function OrdenEdit(){
                 </div>
                 <br />
                 <div>
-                    <button onClick={()=>printOrden(orden)} type="button" style={{marginRight: '200px'}} className="btn">Imprimir</button>
+                    <button onClick={()=>printOrden(orden)} type="button" style={{marginRight: '200px'}} className="btn">PDF</button>
                     <button type="submit" className="btn">Guardar</button>
                 </div>
             </form>

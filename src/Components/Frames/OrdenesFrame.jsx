@@ -14,36 +14,17 @@ function OrdenesFrame (){
     async function findOrdenes (){
         setOrdenes(await getOrdenes())
     }
-
-    // function openOrden(serie, folio){
-    //     ipcRenderer.sendSync('create-window',
-    //         ({
-    //             width:1200, 
-    //             height:820, 
-    //             url: `${process.env.REACT_APP_URL}/orden?serie=${serie}&folio=${folio}&mode=edit`
-    //         })
-    //     )
-    // }
-
-    // function newOrden(){
-    //     ipcRenderer.sendSync('create-window',
-    //         ({
-    //             width:1200, 
-    //             height:820, 
-    //             url: `${process.env.REACT_APP_URL}/orden?mode=new`
-    //         })
-    //     )
-    // }
-    
     
     const headings = [ "Serie", "Folio", "Fecha", "Naviera", "Contenedor", "Booking / BL","Consignatario", "Sello", "Operador", "Ruta", 
-    "Tipos de Servicio", "Unidad", "Placas", "Flete", "Maniobra", "Almacenaje","Reexpedicion",
-    "Dif Km.", "Subtotal", "I.V.A.", "Retencion", "Total", "Status"]
+    "Tipo de Servicio", "Unidad", "Placas", "Status"]
     
+    const filters = [ "Serie", "Folio", "Fecha", "Contenedor", "Booking", "Sello","Ruta", 
+    "Tipo de Servicio", "Status"]
+
     return(
         <>
             <h1 className="title">Ordenes de Servicio</h1>
-            <SearchBar filters={headings} function={null}/>
+            <SearchBar filters={filters} model="orden" function={setOrdenes}/>
             <div className="frame">
                 <table>
                     <thead>
@@ -75,17 +56,8 @@ function OrdenesFrame (){
                                     <td>{orden.tipo_servicio}</td>
                                     <td>{orden.unidad.clave}</td>
                                     <td>{orden.unidad.placas}</td>
-                                    <td>{orden.flete}</td>
-                                    <td>{orden.maniobra}</td>
-                                    <td>{orden.almacenaje}</td>
-                                    <td>{orden.reexpedicion}</td>
-                                    <td>{orden.dif_kilometraje}</td>
-                                    <td>{orden.subtotal}</td>
-                                    <td>{orden.iva}</td>
-                                    <td>{orden.retencion}</td>
-                                    <td>{orden.total}</td>
                                     <td>{orden.estatus}</td>
-                                    <td onClick={async ()=> {await deleteOrden(orden.serie, orden.folio); findOrdenes()}} className="delete pointer">Borrar</td>
+                                    <td onClick={async ()=> {await deleteOrden(orden.serie, orden.folio); findOrdenes()}} className="delete pointer">Eliminar</td>
                                 </tr>
                             )
                         })}

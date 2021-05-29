@@ -1,6 +1,5 @@
 import React from 'react'
-import Button from '../Button'
-
+import SideMenuButton  from './SideMenuButton'
 
 function SideMenu (props) {
 
@@ -8,7 +7,7 @@ function SideMenu (props) {
         <div className="side-menu">
             {props.buttons.map(button =>{
                 return(
-                    <Button key={button.name} name={button.name} image={button.image} function={button.function}/>
+                    <SideMenuButton key={button.name} name={button.name} image={button.image} function={button.function}/>
                 )
             })}
         </div>

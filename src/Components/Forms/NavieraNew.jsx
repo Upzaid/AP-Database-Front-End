@@ -13,7 +13,7 @@ export default function NavieraNew(){
         setLatest(await latestNaviera())
     }
 
-    async function submit(e){
+    function submit(e){
         e.preventDefault()
         const naviera = {
             clave: document.getElementById('clave').value,

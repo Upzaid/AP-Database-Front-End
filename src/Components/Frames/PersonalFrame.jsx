@@ -10,7 +10,8 @@ function PersonalFrame (){
 
     const [personal, setPersonal] = useState([])
     const headings =["Clave", "Nombre", "R.F.C.","Telefono"]
-
+    const filters = ["Clave", "Nombres", "Primer Apellido", "Segundo Apellido"]
+    
     async function findPersonal(){
         setPersonal(await getPersonal());
     }
@@ -18,7 +19,7 @@ function PersonalFrame (){
     return(
         <>
             <h1 className="title">Personal</h1>
-            <SearchBar filters={headings} function={null}/>
+            <SearchBar filters={filters} model="personal" function={setPersonal}/>
             <div className="frame">
                 <table>
                     <thead>
@@ -41,7 +42,7 @@ function PersonalFrame (){
                                     <td>{personal.nombres} {personal.primer_apellido} {personal.segundo_apellido}</td>
                                     <td>{personal.rfc}</td>
                                     <td>{personal.telefono}</td>
-                                    <td onClick={async ()=>{await deletePersonal(personal.clave); findPersonal()}} className="delete pointer">Borrar</td>
+                                    <td onClick={async ()=>{await deletePersonal(personal.clave); findPersonal()}} className="delete pointer">Eliminar</td>
                                 </tr>
                             )
                         })}
