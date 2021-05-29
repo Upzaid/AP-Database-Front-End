@@ -32,7 +32,7 @@ export function openCliente(clave){
         ({
             width:400, 
             height:680, 
-            url: `${process.env.REACT_APP_URL}/cliente?clave=${clave}&mode=edit`
+            url: `/cliente?clave=${clave}&mode=edit`
         })
     )
 }
@@ -42,7 +42,7 @@ export function newCliente(){
         ({
             width:400, 
             height:740, 
-            url: `${process.env.REACT_APP_URL}/cliente`
+            url: `/cliente`
         })
     )
 }
@@ -62,7 +62,7 @@ export async function createCliente(cliente){
     
     if (response.status === 200){
         ipcRenderer.sendSync('alert', await response.json())
-        return window.location.replace('/cliente')
+        return window.location.replace(process.env.NODE_ENV === 'development' ? '/cliente' : '#cliente')
     }else if (response.status === 202){
         return ipcRenderer.send('alert', (await response.json()).join('\n'))
     }

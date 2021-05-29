@@ -32,7 +32,7 @@ export function openLiquidacion(folio){
         ({
             width:700, 
             height:820, 
-            url: `${process.env.REACT_APP_URL}/liquidacion?folio=${folio}&mode=edit`
+            url: `/liquidacion?folio=${folio}&mode=edit`
         })
     )
 }
@@ -42,7 +42,7 @@ export function newLiquidacion(){
         ({
             width:700, 
             height:820, 
-            url: `${process.env.REACT_APP_URL}/liquidacion`
+            url: `/liquidacion`
         })
     )
 }
@@ -62,7 +62,7 @@ export async function createLiquidacion(liquidacion){
     
     if (response.status === 200){
         ipcRenderer.sendSync('alert', await response.json())
-        return window.location.replace('/liquidacion')
+        return window.location.replace(process.env.NODE_ENV === 'development' ? `/liquidacion` : `#liquidacion`)
     }else if (response.status === 202){
         return ipcRenderer.send('alert', (await response.json()).join('\n'))
     }
@@ -103,7 +103,7 @@ export async function updateLiquidacion (liquidacion){
         body: JSON.stringify(liquidacion)
         })
     if (response.status === 200) {
-        window.location.replace(`/liquidacion?folio=${liquidacion.folio}&mode=edit`)
+        window.location.replace(process.env.NODE_ENV === 'development' ? `/liquidacion?folio=${liquidacion.folio}&mode=edit` : `#liquidacion?folio=${liquidacion.folio}&mode=edit`)
         return ipcRenderer.sendSync('alert', await response.json())
     }else if (response.status === 202){
         return ipcRenderer.sendSync('alert', (await response.json()).join('\n'))

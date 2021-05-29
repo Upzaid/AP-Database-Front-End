@@ -32,7 +32,7 @@ export function openPersonal(clave){
         ({
             width:400, 
             height:820, 
-            url: `${process.env.REACT_APP_URL}/personal?clave=${clave}&mode=edit`
+            url: `/personal?clave=${clave}&mode=edit`
         })
     )
 }
@@ -42,7 +42,7 @@ export function newPersonal(){
         ({
             width:400, 
             height:820, 
-            url: `${process.env.REACT_APP_URL}/personal`
+            url: `/personal`
         })
     )
 }
@@ -62,7 +62,7 @@ export async function createPersonal(personal){
     
     if (response.status === 200){
         ipcRenderer.sendSync('alert', await response.json())
-        return window.location.replace('/personal')
+        return window.location.replace(process.env.NODE_ENV === 'development' ? `/personal` : `#personal`)
     }else if (response.status === 202){
         return ipcRenderer.send('alert', (await response.json()).join('\n'))
     }

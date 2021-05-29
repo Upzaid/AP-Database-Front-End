@@ -142,10 +142,6 @@ export default function OrdenNew(){
         createOrden(orden)
     }
 
-    function print(){
-
-    }
-
     return(
         <div >
             <h1 className="title">Nueva Orden de Trabajo</h1>

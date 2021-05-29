@@ -4,7 +4,6 @@ import Configuracion from '../../Assets/Configuracion.svg'
 
 const { ipcRenderer } = window.require("electron");
 
-
 function LogInForm(){
     
     const [error, setError] = useState([])
@@ -14,7 +13,7 @@ function LogInForm(){
             ({
                 width:300, 
                 height:460, 
-                url: `${process.env.REACT_APP_URL}/config`
+                url: `/config`
             })
         )
     }
@@ -40,14 +39,13 @@ function LogInForm(){
             
             // Successful Log in redirect to Main Window set auth token
             localStorage.setItem('auth-token', await response.json())
-            
-            return window.location.replace('/mainwindow')
+            console.log(window.location);
+            return window.location.replace(process.env.NODE_ENV === 'development' ? '/mainwindow' : '#mainwindow')
         
         } catch (err) {
             console.log(err);
             return (err)
-        }
-        
+        }    
     }
 
     return(

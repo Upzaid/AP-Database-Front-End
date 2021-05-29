@@ -3,21 +3,21 @@ const env = require('dotenv').config()
 const {app, BrowserWindow, ipcMain} = require('electron')
 const electron = require('electron')
 const path = require('path')
-const url = require('url')
+const isDev = require("electron-is-dev");
+
+if (require("electron-squirrel-startup")) {
+  app.quit();
+} 
 
 const {OrdenPDF} = require('../src/PDF-Functions/OrdenPDF')
 const {LiquidacionPDF} = require('../src/PDF-Functions/LiquidacionPDF')
 const {AnticiposPDF} = require('../src/PDF-Functions/AnticiposPDF')
 
+const url = isDev
+? "http://localhost:3000"
+: `file://${path.join(__dirname, "../build/index.html#")}`
+
 function createWindow () {
-
-  const startUrl = `${process.env.REACT_APP_URL}` || `file://${path.join(__dirname, '../build/index.hmtl')}`
-
-  console.log(url.format({
-    pathname: path.join(__dirname, '../index.html/login'),
-    protocol: 'file:',
-    slashes: true,
-  }));
 
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -30,13 +30,12 @@ function createWindow () {
     },
     icon: './src/Assets/Logo.png'
   })
-  
-  // and load the url of the app.
-  mainWindow.loadURL(startUrl) // URL Accesspoint to the React App
+
+  mainWindow.loadURL(url) // URL Accesspoint to the React App
   mainWindow.setMenu(null)
-  
+    
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished
@@ -71,7 +70,7 @@ ipcMain.on('create-window', (event, arg) =>{
     icon: './src/Assets/Logo.png',
   })
   window.setMenu(null)
-  window.loadURL(arg.url)
+  window.loadURL(`${url}${arg.url}`)
 
   event.returnValue = null
 })

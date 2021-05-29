@@ -34,7 +34,7 @@ export function openFactura(serie, folio){
         ({
             width: 500, 
             height: 700, 
-            url: `${process.env.REACT_APP_URL}/factura?serie=${serie}&folio=${folio}&mode=edit`
+            url: `/factura?serie=${serie}&folio=${folio}&mode=edit`
         })
     )
 }
@@ -44,7 +44,7 @@ export function newFactura(){
         ({
             width: 500, 
             height: 700, 
-            url: `${process.env.REACT_APP_URL}/factura`
+            url: `/factura`
         })
     )
 }
@@ -64,7 +64,7 @@ export async function createFactura(factura){
     
     if (response.status === 200){
         ipcRenderer.sendSync('alert', await response.json())
-        return window.location.replace('/factura')
+        return window.location.replace(process.env.NODE_ENV === 'development' ? `/factura` : `#factura`)
     }else if (response.status === 202){
         return ipcRenderer.send('alert', (await response.json()).join('\n'))
     }

@@ -32,7 +32,7 @@ export function openNaviera(clave){
         ({
             width:400, 
             height:680, 
-            url: `${process.env.REACT_APP_URL}/naviera?clave=${clave}&mode=edit`
+            url: `/naviera?clave=${clave}&mode=edit`
         })
     )
 }
@@ -42,7 +42,7 @@ export function newNaviera(){
         ({
             width:400, 
             height:740, 
-            url: `${process.env.REACT_APP_URL}/naviera`
+            url: `/naviera`
         })
     )
 }
@@ -62,7 +62,7 @@ export async function createNaviera(naviera){
     
     if (response.status === 200){
         ipcRenderer.sendSync('alert', await response.json())
-        return window.location.replace('/naviera')
+        return window.location.replace(process.env.NODE_ENV === 'development' ? `/naviera` : `#naviera`)
     }else if (response.status === 202){
         return ipcRenderer.send('alert', (await response.json()).join('\n'))
     }

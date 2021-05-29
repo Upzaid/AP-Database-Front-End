@@ -14,7 +14,7 @@ export function openUsers(){
         ({
             width:780, 
             height:600, 
-            url: `${process.env.REACT_APP_URL}/users`
+            url: `/users`
         })
     )
 }

@@ -15,11 +15,11 @@ function OrdenesFrame (){
         setOrdenes(await getOrdenes())
     }
     
-    const headings = [ "Serie", "Folio", "Fecha", "Naviera", "Contenedor", "Booking / BL","Consignatario", "Sello", "Operador", "Ruta", 
-    "Tipo de Servicio", "Unidad", "Placas", "Status"]
+    const headings = [ "Serie", "Folio", "Fecha", "Naviera", "Contenedor", "Booking / BL", "Consignatario", "Sello", "Operador", "Ruta", 
+    "Tipo de Servicio", "Unidad", "Estatus"]
     
     const filters = [ "Serie", "Folio", "Fecha", "Contenedor", "Booking", "Sello","Ruta", 
-    "Tipo de Servicio", "Status"]
+    "Tipo de Servicio", "Estatus"]
 
     return(
         <>
@@ -55,7 +55,6 @@ function OrdenesFrame (){
                                     <td>{orden.ruta}</td>
                                     <td>{orden.tipo_servicio}</td>
                                     <td>{orden.unidad.clave}</td>
-                                    <td>{orden.unidad.placas}</td>
                                     <td>{orden.estatus}</td>
                                     <td onClick={async ()=> {await deleteOrden(orden.serie, orden.folio); findOrdenes()}} className="delete pointer">Eliminar</td>
                                 </tr>

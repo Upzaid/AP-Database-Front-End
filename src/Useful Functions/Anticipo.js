@@ -34,7 +34,7 @@ export function openAnticipo(serie, folio){
         ({
             width:450, 
             height:600, 
-            url: `${process.env.REACT_APP_URL}/anticipo?serie=${serie}&folio=${folio}&mode=edit`
+            url: `/anticipo?serie=${serie}&folio=${folio}&mode=edit`
         })
     )
 }
@@ -44,7 +44,7 @@ export function newAnticipo(){
         ({
             width:450, 
             height:700, 
-            url: `${process.env.REACT_APP_URL}/anticipo`
+            url: `/anticipo`
         })
     )
 }
@@ -133,7 +133,7 @@ export function openPrintAnticipos(){
     return (ipcRenderer.sendSync('create-window',  ({
         width:600, 
         height:600, 
-        url: `${process.env.REACT_APP_URL}/anticipo/print`
+        url: `/anticipo/print`
         }))
     )
 }

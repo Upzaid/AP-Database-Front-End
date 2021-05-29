@@ -23,7 +23,7 @@ export function openUnidad(clave){
         ({
             width:400, 
             height:680, 
-            url: `${process.env.REACT_APP_URL}/unidad?clave=${clave}&mode=edit`
+            url: `/unidad?clave=${clave}&mode=edit`
         })
     )
 }
@@ -33,7 +33,7 @@ export function newUnidad(){
         ({
             width:400, 
             height:700, 
-            url: `${process.env.REACT_APP_URL}/unidad`
+            url: `/unidad`
         })
     )
 }

@@ -32,7 +32,7 @@ export function openMantenimiento(folio){
         ({
             width:400, 
             height:800, 
-            url: `${process.env.REACT_APP_URL}/mantenimiento?folio=${folio}&mode=edit`
+            url: `/mantenimiento?folio=${folio}&mode=edit`
         })
     )
 }
@@ -42,7 +42,7 @@ export function newMantenimiento(){
         ({
             width:400, 
             height:820, 
-            url: `${process.env.REACT_APP_URL}/mantenimiento`
+            url: `/mantenimiento`
         })
     )
 }

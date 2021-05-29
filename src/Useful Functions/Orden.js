@@ -34,7 +34,7 @@ export function openOrden(serie, folio){
         ({
             width:1200, 
             height:820, 
-            url: `${process.env.REACT_APP_URL}/orden?serie=${serie}&folio=${folio}&mode=edit`
+            url: `/orden?serie=${serie}&folio=${folio}&mode=edit`
         })
     )
 }
@@ -44,7 +44,7 @@ export function newOrden(){
         ({
             width:1200, 
             height:820, 
-            url: `${process.env.REACT_APP_URL}/orden`
+            url: `/orden`
         })
     )
 }
@@ -64,7 +64,7 @@ export async function createOrden(orden){
     
     if (response.status === 200){
         ipcRenderer.sendSync('alert', await response.json())
-        return window.location.replace('/orden')
+        return window.location.replace(process.env.NODE_ENV === 'development' ? `/orden` : `#orden`)
     }else if (response.status === 202){
         return ipcRenderer.send('alert', (await response.json()).join('\n'))
     }
@@ -106,7 +106,7 @@ export async function updateOrden (orden){
         body: JSON.stringify(orden)
         })
     if (response.status === 200) {
-        window.location.replace(`/orden?serie=${orden.serie}&folio=${orden.folio}&mode=edit`)
+        window.location.replace(process.env.NODE_ENV === 'development' ? `/orden?serie=${orden.serie}&folio=${orden.folio}&mode=edit` : `#orden?serie=${orden.serie}&folio=${orden.folio}&mode=edit`)
         return ipcRenderer.sendSync('alert', await response.json())
     }else if (response.status === 202){
         return ipcRenderer.sendSync('alert', (await response.json()).join('\n'))
