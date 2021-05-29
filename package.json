@@ -59,7 +59,7 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "name": "DesktopApp",
+        "name": "Autotransportes Pantaco",
         "asar": true
       },
       "makers": [

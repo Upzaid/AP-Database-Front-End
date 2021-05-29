@@ -11,7 +11,7 @@ function AnticipoPDF(document, x, y, anticipo){
     document.text(anticipo.fecha.split('T')[0], x + 0, y + 18, {align:'right', width: 300})
     
     document.moveTo(x, y + 27).lineTo(x + 306, y + 27).stroke()
-    document.fontSize(10).text(`${anticipo.personal.nombres} ${anticipo.personal.primer_apelldio} ${anticipo.personal.segundo_apelldio}`, x, y + 37, {align: 'center', width: 306})
+    document.fontSize(10).text(`${anticipo.personal.nombres} ${anticipo.personal.primer_apellido} ${anticipo.personal.segundo_apellido}`, x, y + 37, {align: 'center', width: 306})
     document.text(anticipo.concepto, x, y + 77, {align: 'center', width: 306})
     
     document.text(`$ ${anticipo.importe}`, x, y + 157, {align: 'right', width: 300})
@@ -26,6 +26,7 @@ function AnticiposPDF(anticipos){
     })
     const writeStream = fs.createWriteStream('anticipo.pdf')
     doc.pipe(writeStream)
+
 
     let x = 0
     let y = 0

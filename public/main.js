@@ -28,14 +28,14 @@ function createWindow () {
       contextIsolation: false,
       // preload: path.join(__dirname, 'preload.js')
     },
-    icon: './src/Assets/Logo.png'
+    icon: path.join(__dirname,'../src/Assets/Logo.png')
   })
 
   mainWindow.loadURL(url) // URL Accesspoint to the React App
   mainWindow.setMenu(null)
     
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished
@@ -67,7 +67,7 @@ ipcMain.on('create-window', (event, arg) =>{
       nodeIntegration: true,
       contextIsolation: false,
     },
-    icon: './src/Assets/Logo.png',
+    icon: path.join(__dirname,'../src/Assets/Logo.png')
   })
   window.setMenu(null)
   window.loadURL(`${url}${arg.url}`)
@@ -82,7 +82,7 @@ ipcMain.on('confirm', (event, message)=>{
     type: 'none',
     buttons: ['Cancelar', 'Aceptar'],
     message,
-    icon : './src/Assets/Logo.png',
+    icon : path.join(__dirname,'../src/Assets/Logo.png')
   }
   const result = electron.dialog.showMessageBoxSync(options)
   if (result === 0) return event.returnValue = false
@@ -94,7 +94,7 @@ ipcMain.on('alert', (event, message) =>{
   const options ={
     type: "none",
     message,
-    icon : './src/Assets/Logo.png',
+    icon : path.join(__dirname,'../src/Assets/Logo.png')
   }
 
   electron.dialog.showMessageBoxSync(options)
